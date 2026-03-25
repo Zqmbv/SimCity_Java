@@ -39,44 +39,32 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
         Transform3D Camera_T = new Transform3D();
         Camera.getTransform(Camera_T);
         Camera_T.get(Pos); 
-
-        AddModel(new Residencial(),0f,0f); 
-        AddModel(new Residencial(),1f,1f); 
-        AddModel(new Residencial(),2f,2f); 
-        //AddModel(new Residencial(),6f,0f);
-        
-        
-        
-        //AddModel(new Residencial(),0f,3f); 
-        //AddModel(new Residencial(),3f,0f); 
-        //AddModel(new Residencial(),3f,3f);         
+    
+        for(int i = 0; i< Inspector.MAP_HEIGHT ; i++){
+            for(int j = 0; j< Inspector.MAP_WIDTH ; j++){
+                AddModel(new Wire(), i,j); 
+            }        
+        }
+                     
     }
     
     public BranchGroup Scene3D(){
         BranchGroup root = new BranchGroup();
 
-        //LIGHT
-        DirectionalLight Light = new DirectionalLight();
-        Light.setInfluencingBounds(new BoundingSphere());
-        Light.setColor(new Color3f(Color.white));
-        Light.setDirection(new Vector3f(-0.5f,-0.5f,-0.5f));
+        DirectionalLight Light = new DirectionalLight(new Color3f(Color.white),new Vector3f(-0.5f,-0.5f,-0.5f));
+        Light.setInfluencingBounds(new BoundingSphere(new Point3d(0,0,0), 1000.0));
         
-        //BACKGROUND
-        Color3f colorFondo = new Color3f(0.255f, 0.812f, 0.969f);
-        Background bg = new Background(colorFondo);
+        Background bg = new Background(new Color3f(0.255f, 0.812f, 0.969f));
         BoundingSphere bounds = new BoundingSphere(new Point3d(0.0, 0.0, 0.0), 1000.0);
         bg.setApplicationBounds(bounds);
         
-        //PROPERTIES
         Appearance appFloor = new Appearance();
         Material matFloor = new Material();
-        matFloor.setAmbientColor(colorFondo);
-        matFloor.setDiffuseColor(new Color3f(Color.darkGray));
+        matFloor.setDiffuseColor(new Color3f(0.722f, 0.533f, 0.384f));
         appFloor.setMaterial(matFloor);
         
         Appearance appBase = new Appearance();
         Material matBase = new Material();
-        matBase.setAmbientColor(colorFondo);
         matBase.setDiffuseColor(new Color3f(Color.white));
         appBase.setMaterial(matBase);        
         
@@ -85,14 +73,18 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
         Move.setTranslation(new Vector3f(Inspector.MAP_WIDTH,0,Inspector.MAP_HEIGHT));
         TransformGroup T = new TransformGroup(Move);
 
-        Box Floor  = new Box(Inspector.MAP_WIDTH,0.02f,Inspector.MAP_HEIGHT,appFloor);
-        Box Base  = new Box(Inspector.MAP_WIDTH+0.01f,0.01f,Inspector.MAP_HEIGHT+0.01f,appBase);                
+        Transform3D BaseMove  = new Transform3D();
+        BaseMove.setTranslation(new Vector3f(0,-0.1f,0));
+        TransformGroup BaseT = new TransformGroup(BaseMove);        
+        Box Floor  = new Box(Inspector.MAP_WIDTH,0.05f,Inspector.MAP_HEIGHT,appFloor);
+        
+        Box Base  = new Box(Inspector.MAP_WIDTH+0.1f,0.05f,Inspector.MAP_HEIGHT+0.1f,appBase);                
         
         root.addChild(bg);
         root.addChild(Light);
         root.addChild(T);
-            T.addChild(Floor);    
-            T.addChild(Base);        
+            T.addChild(BaseT);BaseT.addChild(Base);
+            T.addChild(Floor);        
 
         return root;
     }
@@ -102,7 +94,7 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
         BranchGroup newBG = new BranchGroup();
         
         Transform3D Move = new Transform3D();
-        Move.setTranslation(new Vector3f(x,0,y));
+        Move.setTranslation(new Vector3f(x*2,0,y*2));
         TransformGroup T = new TransformGroup(Move);
             newBG.addChild(T);T.addChild(Obj);
         
