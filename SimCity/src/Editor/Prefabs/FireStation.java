@@ -1,9 +1,22 @@
 package Editor.Prefabs;
 import javax.media.j3d.*;
 import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.universe.SimpleUniverse;
+import java.awt.Color;
 import javax.vecmath.*;
 
-public class FireStation extends BranchGroup  {
+public class FireStation extends TransformGroup  {
     
+    public FireStation(){
+        Transform3D Pivot = new  Transform3D();
+        Pivot.setTranslation(new Vector3f(3f,0,3f));
+        this.setTransform(Pivot);
+        
+        Appearance app = new Appearance();
+        Material mat = new Material();
+        mat.setDiffuseColor(new Color3f(Color.orange));
+        app.setMaterial(mat);
+       
+        Box Road = new Box(3,0.1f,3,app);
+        this.addChild(Road);
+    }
 }

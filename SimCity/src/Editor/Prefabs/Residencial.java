@@ -1,30 +1,22 @@
 package Editor.Prefabs;
-import javax.media.j3d.BranchGroup;
 import javax.media.j3d.*;
 import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.universe.SimpleUniverse;
 import java.awt.Color;
 import javax.vecmath.*;
 
 public class Residencial extends TransformGroup  {
     
-    float Size = 3;
-    
     public Residencial(){
-        Appearance BaseApp = new  Appearance();
-        Material BaseMat = new Material();
-        BaseMat.setDiffuseColor(new Color3f(Color.red));
-        BaseMat.setLightingEnable(true);
-        BaseApp.setMaterial(BaseMat);
+        Transform3D Pivot = new  Transform3D();
+        Pivot.setTranslation(new Vector3f(3f,0,3f));
+        this.setTransform(Pivot);
         
-        Transform3D mov = new Transform3D();
-        mov.setTranslation(new Vector3f(Size,0,Size));
-        TransformGroup Pivot = new TransformGroup(mov);
-        
-        //Box Base = new Box(Size,0.05f,Size,BaseApp);
-        ColorCube Base = new  ColorCube(3);
-        this.addChild(Pivot);
-            Pivot.addChild(Base);  
-
+        Appearance app = new Appearance();
+        Material mat = new Material();
+        mat.setDiffuseColor(new Color3f(Color.red));
+        app.setMaterial(mat);
+       
+        Box Road = new Box(3,0.1f,3,app);
+        this.addChild(Road);
     }
 }

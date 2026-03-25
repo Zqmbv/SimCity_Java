@@ -1,9 +1,9 @@
 package Editor.Prefabs;
 import javax.media.j3d.*;
 import com.sun.j3d.utils.geometry.*;
-import com.sun.j3d.utils.universe.SimpleUniverse;
+import java.awt.Color;
 import javax.vecmath.*;
 
-public class Stadium extends BranchGroup  {
+public class Stadium extends TransformGroup  {
     
 }
