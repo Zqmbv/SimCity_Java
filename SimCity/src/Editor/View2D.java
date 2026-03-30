@@ -17,7 +17,7 @@ public class View2D extends JPanel implements KeyListener {
     
     public View2D(){
         this.setFocusable(true);
-        this.setBackground(Color.gray);
+        this.setBackground(Color.darkGray);
         this.addKeyListener(this);
     }
     
@@ -29,6 +29,7 @@ public class View2D extends JPanel implements KeyListener {
         g2D.translate(Center.x-Move.x*Zdepth,Center.y-Move.y*Zdepth);
         
         //LIMITS
+        g2D.setColor(Color.white);
         g2D.drawRect(0, 0, Inspector.MAP_WIDTH*Zdepth, Inspector.MAP_HEIGHT*Zdepth);
 
         //BUILD HECHAS
@@ -58,8 +59,8 @@ public class View2D extends JPanel implements KeyListener {
         if(code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S){Move.y++;}
         if(code == KeyEvent.VK_RIGHT|| code == KeyEvent.VK_D){Move.x++;} 
         
-        Rectangle Border = new Rectangle(0, 0, Inspector.MAP_WIDTH, Inspector.MAP_HEIGHT);
-        Rectangle Cursor = new Rectangle((int)Move.x,(int)Move.y, Inspector.Cursor.size, Inspector.Cursor.size);
+        Rectangle Border = new Rectangle(0, 0, Inspector.MAP_WIDTH-Inspector.Cursor.size+1, Inspector.MAP_HEIGHT-Inspector.Cursor.size+1);
+        Rectangle Cursor = new Rectangle((int)Move.x,(int)Move.y, 1,1);
         
         if(!Border.intersects(Cursor)){Move.x= temp.x; Move.y=temp.y;}
         Inspector.Cursor.x = (int) Move.x;Inspector.Cursor.y = (int) Move.y;

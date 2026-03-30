@@ -40,12 +40,20 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
         Camera.getTransform(Camera_T);
         Camera_T.get(Pos); 
     
-        for(int i = 0; i< Inspector.MAP_HEIGHT ; i++){
-            for(int j = 0; j< Inspector.MAP_WIDTH ; j++){
-                AddModel(new Wire(), i,j); 
-            }        
-        }
-                     
+
+
+        //AddModel(new Residencial(),0*3,0*3);  
+        //AddModel(new Comercial(),1*3,0*3); 
+        //AddModel(new Industrial(),2*3,0*3); 
+        
+        AddModel(new CoalPowerPlant(),0,0); 
+        AddModel(new NuclearPowerPlant(),4,4); 
+        
+        //AddModel(new Park(),0,3); 
+        //AddModel(new Road(),1,3); 
+        //AddModel(new Rail(),2,3); 
+        //AddModel(new Wire(),3,3);
+       
     }
     
     public BranchGroup Scene3D(){

@@ -21,17 +21,17 @@ public class Wire extends TransformGroup {
         Capp.setMaterial(Cmat);
         
         Transform3D BaseMov = new Transform3D();
-        BaseMov.setTranslation(new Vector3f(0,0.5f,0));
+        BaseMov.setTranslation(new Vector3f(0,0.15f,0));
         TransformGroup BaseT = new TransformGroup(BaseMov);
-        Cylinder Base = new Cylinder(0.15f,1f,app);
+        Cylinder Base = new Cylinder(0.15f,0.5f,app);
         
         Transform3D PaloMov = new Transform3D();
-        PaloMov.setTranslation(new Vector3f(0,1.5f,0));
+        PaloMov.setTranslation(new Vector3f(0,0.5f,0));
         TransformGroup PaloT = new TransformGroup(PaloMov);
-        Cylinder Palo = new Cylinder(0.1f,3f,app);        
+        Cylinder Palo = new Cylinder(0.1f,0.3f,app);        
         
         Transform3D PosteMove = new Transform3D();
-        PosteMove.setTranslation(new Vector3f(0,3f,0));
+        PosteMove.setTranslation(new Vector3f(0,0.75f,0));
         TransformGroup PosteT = new TransformGroup(PosteMove);
         Box Poste = new Box(0.15f,0.15f,0.15f,app);          
         
@@ -41,10 +41,10 @@ public class Wire extends TransformGroup {
         Transform3D CableAMove = new Transform3D();
         CableARotX.rotX((float)Math.toRadians(90));
         CableARotY.rotY((float)Math.toRadians(90));
-        CableAMove.setTranslation(new Vector3f(0,3f,0));
+        CableAMove.setTranslation(new Vector3f(0,0.75f,0));
         CableAMove.mul(CableARotX);CableAMove.mul(CableARotY);
         TransformGroup CableAT = new TransformGroup(CableAMove);
-        Cylinder CableA = new Cylinder(0.1f,3f,Capp);          
+        Cylinder CableA = new Cylinder(0.1f,2.5f,Capp);          
             
         Box Road = new Box(1,0.1f,1,app);
         this.addChild(Road);
