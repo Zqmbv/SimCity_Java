@@ -16,23 +16,52 @@ public class Inspector extends JPanel implements ActionListener {
         String tag;
         int x,y, size = 0;
         Color color;
+        
+        Tile(){};
+        Tile(String t, int s,Color c){
+            this.tag = t; this.size = s; this.color = c;};
+        Tile(Tile T){this.x = T.x; this.y = T.y;
+            this.tag = T.tag; this.size = T.size; this.color = T.color;};
     }
+    
     static Tile Cursor = new Tile();
     static ArrayList<Tile> Tiles = new ArrayList<>();
     
     View2D newView2D = new View2D();
     View3D newView3D = new View3D();
     
-    JLabel TxtInfo = new JLabel("Selcect a build...");
-    JButton BtnConstruir = new JButton("Build");
-    JButton BtnDesruir = new JButton("Demolish");
+    JLabel TxtInfo = new JLabel("Se Eligio: Zona Residencial");
+    JButton BtnConstruir = new JButton("Construir");
+    JButton BtnDesruir = new JButton("Demoler");
+    JButton BtnMejorar = new JButton("Mejorar");    
     
-    String Category[] = {"RCI","Electricity","Services","Turism","Others"};
-    String Options[][] = {{"Residence","Comercial","Industrial"},
-                          {"Coal Power Plant","Nuclear Power Plant"},
-                          {"Police Station","Fire Station"},
-                          {"Stadium","Airport","Seaport"},
-                          {"Road","Rail","Park","Wire"}};
+    Map<String,Tile> Datos = Map.ofEntries(
+        entry("Zona Residencial",new Tile("R",3,Color.red)),
+        entry("Zona Comercial",new Tile("C",3,Color.blue)),
+        entry("Zona Industrial",new Tile("I",3,Color.yellow)),
+
+        entry("Planta de Carbón",new Tile("PC",4,Color.white)),
+        entry("Planta Nuclear",new Tile("PN",4,Color.white)),
+
+        entry("Estación de Policía",new Tile("EP",3,Color.cyan)),
+        entry("Estación de Bomberos",new Tile("EB",3,Color.orange)),
+
+        entry("Carretera",new Tile("C",1,Color.black)),
+        entry("Vía de Tren",new Tile("T",1,Color.gray)),            
+        entry("Líneas Eléctricas",new Tile("L",1,Color.white)),
+        entry("Parque",new Tile("P",1,Color.green)),               
+
+        entry("Puerto Marítimo",new Tile("PM",4,Color.magenta)),
+        entry("Aeropuerto",new Tile("A",6,Color.magenta)),
+        entry("Estadio",new Tile("E",4,Color.magenta))
+    );
+    
+    String Category[] = {"RCI","Energia","Servicios","Turismo","Otros"};
+    String Options[][] = {{"Zona Residencial","Zona Comercial","Zona Industrial"},
+                          {"Planta de Carbón","Planta Nuclear"},
+                          {"Estación de Policía","Estación de Bomberos"},
+                          {"Estadio","Aeropuerto","Puerto Marítimo"},
+                          {"Carretera","Vía de Tren","Parque","Líneas Eléctricas"}};
     
     public Inspector(){
         this.setLayout(new BorderLayout());
@@ -43,7 +72,8 @@ public class Inspector extends JPanel implements ActionListener {
             newPanel.add(BottomBar(),BorderLayout.SOUTH);
         this.add(newPanel,BorderLayout.WEST);
         
-        this.add(newView3D,BorderLayout.CENTER);            
+        this.add(newView3D,BorderLayout.CENTER);
+        Change(Datos.get("Zona Residencial"));
     }
     
     JMenuBar TopBar(){
@@ -60,9 +90,14 @@ public class Inspector extends JPanel implements ActionListener {
             myMenu.add(newMenu);
         }
         
-        JMenuItem Demolish = new JMenuItem("Demolish");        
+        JMenuItem Demolish = new JMenuItem("Demoler");        
         Demolish.addActionListener(this);
         myMenu.add(Demolish); 
+        
+        JMenuItem Update = new JMenuItem("Mejorar");        
+        Update.addActionListener(this);
+        myMenu.add(Update); 
+        
         
         return myMenu;
     }
@@ -85,35 +120,35 @@ public class Inspector extends JPanel implements ActionListener {
         panel.add(BtnDesruir,gbc);        
         BtnDesruir.addActionListener(this);
         BtnDesruir.setVisible(false);
+
+        gbc.gridy=3;
+        panel.add(BtnMejorar,gbc);        
+        BtnMejorar.addActionListener(this);
+        BtnMejorar.setVisible(false);
         
         return panel;
     }
    
     public void Build(){
-        if(Cursor.size == 0){
-            JOptionPane.showMessageDialog(this, "ERROR - NO SELECCIONÓ UNA ESTRUCTURA");
-            newView2D.repaint(); return;}
-        
         Rectangle newTileCollider = new Rectangle(Cursor.x,Cursor.y,Cursor.size, Cursor.size);
-        for(Tile T : Tiles){
-            //Wire sobre road y rail
-            //revisar road sobre rail
-            if(Cursor.tag == "W" && (T.tag == "R" || T.tag == "P")){continue;}
-            
+        Rectangle Border = new Rectangle(0, 0, Inspector.MAP_WIDTH-Inspector.Cursor.size+1, Inspector.MAP_HEIGHT-Inspector.Cursor.size+1);
+        
+        if(!Border.intersects(newTileCollider)){
+                JOptionPane.showMessageDialog(this, "ERROR\nSE SALIO DE LA ZONA DE CONTRUCCIÓN");
+                newView2D.repaint();return;
+        }
+        
+        
+        for(Tile T : Tiles){            
             Rectangle oldTileCollider = new Rectangle(T.x,T.y, T.size, T.size);
             if(newTileCollider.intersects(oldTileCollider)){
-                JOptionPane.showMessageDialog(this, "ERROR - LA ESTRUCTURA COLISIONO CON OTRA");
+                JOptionPane.showMessageDialog(this, "ERROR\nLA ESTRUCTURA COLISIONÓ CON OTRA");
                 newView2D.repaint();return;
             }
         }         
         
         //OJO - VALORES NO ESCALADOS
-        Tile  newTile  = new Tile();
-        newTile.x = Cursor.x;
-        newTile.y = Cursor.y;
-        newTile.tag = Cursor.tag;
-        newTile.size = Cursor.size;
-        newTile.color = Cursor.color;                                  
+        Tile  newTile  = new Tile(Cursor);                              
         Tiles.add(newTile);
         newView2D.repaint();
     }
@@ -129,11 +164,15 @@ public class Inspector extends JPanel implements ActionListener {
 
         newView2D.repaint();      
     }
+
+    public void Update(){ //Coming Soon
+        newView2D.repaint();      
+    }
     
-     public void Change(String tag, int size, Color color){
-        Cursor.tag = tag;
-        Cursor.size = size;
-        Cursor.color = color;
+     public void Change(Tile Dat){
+        Cursor.tag = Dat.tag;
+        Cursor.size = Dat.size;
+        Cursor.color = Dat.color;
         repaint(); 
     }
     
@@ -144,35 +183,32 @@ public class Inspector extends JPanel implements ActionListener {
         
         String CMD = ((JMenuItem)e.getSource()).getText(); 
         
-        if(CMD == "Demolish"){
+        if(CMD == "Demoler"){
             BtnConstruir.setVisible(false);
             BtnDesruir.setVisible(true);
-            TxtInfo.setText("What do you want to demolish?");
-        
-            Change("F",1,Color.red);   
+            BtnMejorar.setVisible(false);
+            
+            TxtInfo.setText("Que desea demoler?");
+            Change(new Tile(" - ",1,Color.red));   
             newView2D.repaint();
             return;
-        }else{
-            BtnConstruir.setVisible(true);
-            BtnDesruir.setVisible(false);      
-            TxtInfo.setText("You Selected: " + CMD);
         }
-        
-        switch(CMD){
-            case "Residence":Change("R",3,Color.red); break;
-            case "Comercial":Change("C",3,Color.blue); break;
-            case "Industrial":Change("I",3,Color.yellow); break;
-            case "Coal Power Plant":Change("CPP",4,Color.white); break;
-            case "Nuclear Power Plant":Change("NPP",6,Color.white); break;
-            case "Wire":Change("W",1,Color.white); break;
-            case "Police Station":Change("PS",3,Color.cyan); break;            
-            case "Fire Station":Change("FS",3,Color.orange); break;            
-            case "Stadium":Change("S",4,Color.magenta); break;            
-            case "Airport":Change("AP",4,Color.magenta); break;
-            case "Seaport":Change("SP",4,Color.magenta); break;            
-            case "Road":Change("R",1,Color.black); break; 
-            case "Rail":Change("R",1,Color.darkGray); break; 
-            case "Park":Change("P",1,Color.GREEN); break; 
-        }
+            
+        if(CMD == "Mejorar"){
+            BtnConstruir.setVisible(false);
+            BtnDesruir.setVisible(false);
+            BtnMejorar.setVisible(true);
+            
+            TxtInfo.setText("Que desea mejorar?");
+            Change(new Tile(" + ",1,Color.green));   
+            newView2D.repaint();
+            return;
+        }            
+            
+        BtnConstruir.setVisible(true);
+        BtnDesruir.setVisible(false);
+        BtnMejorar.setVisible(false); 
+        TxtInfo.setText("Se Eligio: " + CMD);        
+        Change(Datos.get(CMD));
     }
 }
