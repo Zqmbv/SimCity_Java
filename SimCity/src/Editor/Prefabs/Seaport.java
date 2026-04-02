@@ -4,29 +4,27 @@ import com.sun.j3d.utils.geometry.*;
 import java.awt.Color;
 import javax.vecmath.*;
 
-public class FireStation extends TransformGroup  {
-    
-    public FireStation(){
-        Transform3D Pivot = new  Transform3D();
-        Pivot.setTranslation(new Vector3f(3f,0,3f));
+public class Seaport  extends TransformGroup{
+    public Seaport(){
+            Transform3D Pivot = new  Transform3D();
+        Pivot.setTranslation(new Vector3f(4f,0,4f));
         this.setTransform(Pivot);
         
         Appearance app = new Appearance();
         Material mat = new Material();
-        mat.setDiffuseColor(new Color3f(Color.orange));
+        mat.setDiffuseColor(new Color3f(Color.magenta));
         app.setMaterial(mat);
-
+    
+        CuboT(new Vector3f(2,0,0),new Vector3d(2,2,2),2);
+        CuboT(new Vector3f(0,0,0),new Vector3d(3,2,3),3);
+        
         Appearance Starapp = new Appearance();
         Material Starmat = new Material();
         Starmat.setDiffuseColor(new Color3f(Color.yellow));
-        Starapp.setMaterial(Starmat);
-        
-        CuboT(new Vector3f(0,0,2),new Vector3d (1.75,1,0.5), 1);
-        CuboT(new Vector3f(0,0,0),new Vector3d (2.5,1,2), 2);
-        CuboT(new Vector3f(0,0,-2),new Vector3d (0.5,1,0.5), 4);
+        Starapp.setMaterial(Starmat); 
         
         Transform3D Pivot_Move = new Transform3D();
-        Pivot_Move.setTranslation(new Vector3f(0,4,0));
+        Pivot_Move.setTranslation(new Vector3f(0,6,0));
         Pivot_Move.setScale(new Vector3d(0.5,0.5,0.5));
         TransformGroup Pivot_T = new TransformGroup(Pivot_Move);       
  
@@ -35,20 +33,10 @@ public class FireStation extends TransformGroup  {
 
         
         Transform3D  TuboA_Move = new Transform3D();
-        TuboA_Move.setTranslation(new Vector3f(1.5f,0,0));
+        TuboA_Move.setTranslation(new Vector3f(0,-0.25f,0));
         TransformGroup TuboA_T = new TransformGroup(TuboA_Move);
-        Box TuboA = new Box(0.5f,2f,0.5f,Starapp);        
-
-        Transform3D  TuboB_Move = new Transform3D();
-        TuboB_Move.setTranslation(new Vector3f(0,0,0));
-        TransformGroup TuboB_T = new TransformGroup(TuboB_Move);
-        Box TuboB = new Box(2f,0.5f,0.5f,Starapp);        
-         
-
-        Transform3D  TuboC_Move = new Transform3D();
-        TuboC_Move.setTranslation(new Vector3f(0,2,0));
-        TransformGroup TuboC_T = new TransformGroup(TuboC_Move);
-        Box TuboC = new Box(2,0.5f,0.5f,Starapp);           
+        Box TuboA = new Box(0.5f,3f,0.5f,Starapp);        
+        
 
         Transform3D  TuboD_Move = new Transform3D();
         TuboD_Move.setTranslation(new Vector3f(0,-2,0));
@@ -61,7 +49,7 @@ public class FireStation extends TransformGroup  {
         Box TuboE = new Box(0.5f,0.75f,0.5f,Starapp);
 
         Transform3D  TuboF_Move = new Transform3D();
-        TuboF_Move.setTranslation(new Vector3f(-1.75f,1,0));
+        TuboF_Move.setTranslation(new Vector3f(1.75f,-1,0));
         TransformGroup TuboF_T = new TransformGroup(TuboF_Move);
         Box TuboF = new Box(0.5f,0.75f,0.5f,Starapp);
         
@@ -72,25 +60,24 @@ public class FireStation extends TransformGroup  {
         this.addChild(Pivot_T);
             Pivot_T.addChild(ROT);ROT.addChild(RI);
                 ROT.addChild(TuboA_T);TuboA_T.addChild(TuboA);    
-                ROT.addChild(TuboB_T);TuboB_T.addChild(TuboB); 
-                ROT.addChild(TuboC_T);TuboC_T.addChild(TuboC);
                 ROT.addChild(TuboD_T);TuboD_T.addChild(TuboD);
                 ROT.addChild(TuboE_T);TuboE_T.addChild(TuboE);
                 ROT.addChild(TuboF_T);TuboF_T.addChild(TuboF);
         
-        Box Road = new Box(3,0.1f,3,app);
+        Box Road = new Box(4,0.1f,4,app);
         this.addChild(Road);
+    
     }
     
     public void CuboT(Vector3f POS,Vector3d SCA, int N){
         Appearance TechoApp = new Appearance();
         Material TechoMat = new Material();
-        TechoMat.setDiffuseColor(new Color3f(Color.red));
+        TechoMat.setDiffuseColor(new Color3f(Color.cyan));
         TechoApp.setMaterial(TechoMat); 
         
         Appearance ParedApp = new Appearance();
         Material ParedMat = new Material();
-        ParedMat.setDiffuseColor(new Color3f(Color.gray));
+        ParedMat.setDiffuseColor(new Color3f(Color.white));
         ParedApp.setMaterial(ParedMat); 
         
         for(int i = 0; i < N; i++){
