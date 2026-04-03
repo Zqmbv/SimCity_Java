@@ -8,7 +8,7 @@ public class NuclearPowerPlant extends TransformGroup  {
      
     public NuclearPowerPlant(){
         Transform3D Pivot = new  Transform3D();
-        Pivot.setTranslation(new Vector3f(4f,0,4f));
+        //Pivot.setTranslation(new Vector3f(4f,0,4f));
         this.setTransform(Pivot);   
         
         Appearance app = new Appearance();

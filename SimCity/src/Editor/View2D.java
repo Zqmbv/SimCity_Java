@@ -17,7 +17,7 @@ public class View2D extends JPanel implements KeyListener {
     
     public View2D(){
         this.setFocusable(true);
-        this.setBackground(Color.darkGray);
+        this.setBackground(new Color(0.522f, 0.333f, 0.184f));
         this.addKeyListener(this);
     }
     
@@ -33,18 +33,18 @@ public class View2D extends JPanel implements KeyListener {
         g2D.drawRect(0, 0, Inspector.MAP_WIDTH*Zdepth, Inspector.MAP_HEIGHT*Zdepth);
 
         //BUILD HECHAS
-        for(Inspector.Tile T : Inspector.Tiles){
-            g2D.setColor(T.color);
+        for(Inspector.Tile T : Inspector.Tiles2D){
+            g2D.setColor(T.struct.color);
             g2D.setStroke(new BasicStroke(2f));
-            g2D.drawRect(T.x*Zdepth,T.y*Zdepth, T.size*Zdepth, T.size*Zdepth);
-            g2D.drawString(T.tag, T.x*Zdepth + 3,(T.y+T.size)*Zdepth -3);
+            g2D.drawRect(T.x*Zdepth,T.y*Zdepth, T.struct.size*Zdepth, T.struct.size*Zdepth);
+            g2D.drawString(T.struct.tag, T.x*Zdepth + 3,(T.y+T.struct.size)*Zdepth -3);
         }  
         
         //CURSO
-        if(Inspector.Cursor.size != 0){
-            g2D.setColor(Inspector.Cursor.color);
-            g2D.drawRect(Inspector.Cursor.x*Zdepth,Inspector.Cursor.y*Zdepth, Inspector.Cursor.size*Zdepth, Inspector.Cursor.size*Zdepth);
-            g2D.drawString(Inspector.Cursor.tag, Move.x*Zdepth + 3,(Move.y+Inspector.Cursor.size)*Zdepth-3);
+        if(Inspector.Cursor.struct.size != 0){
+            g2D.setColor(Inspector.Cursor.struct.color);
+            g2D.drawRect(Inspector.Cursor.x*Zdepth,Inspector.Cursor.y*Zdepth, Inspector.Cursor.struct.size*Zdepth, Inspector.Cursor.struct.size*Zdepth);
+            g2D.drawString(Inspector.Cursor.struct.tag, Move.x*Zdepth + 3,(Move.y+Inspector.Cursor.struct.size)*Zdepth-3);
         }  
         this.requestFocus();
     }
@@ -59,7 +59,7 @@ public class View2D extends JPanel implements KeyListener {
         if(code == KeyEvent.VK_DOWN || code == KeyEvent.VK_S){Move.y++;}
         if(code == KeyEvent.VK_RIGHT|| code == KeyEvent.VK_D){Move.x++;} 
         
-        Rectangle Border = new Rectangle(0, 0, Inspector.MAP_WIDTH-Inspector.Cursor.size+1, Inspector.MAP_HEIGHT-Inspector.Cursor.size+1);
+        Rectangle Border = new Rectangle(0, 0, Inspector.MAP_WIDTH-Inspector.Cursor.struct.size+1, Inspector.MAP_HEIGHT-Inspector.Cursor.struct.size+1);
         Rectangle Cursor = new Rectangle((int)Move.x,(int)Move.y, 1,1);
         
         if(!Border.intersects(Cursor)){Move.x= temp.x; Move.y=temp.y;}

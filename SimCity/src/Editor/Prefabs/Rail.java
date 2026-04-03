@@ -10,7 +10,7 @@ import javax.vecmath.*;
 public class Rail extends TransformGroup  {
     public  Rail(){
         Transform3D Pivot = new  Transform3D();
-        Pivot.setTranslation(new Vector3f(1f,0,1f));
+        //Pivot.setTranslation(new Vector3f(1f,0,1f));
         this.setTransform(Pivot);
         
         Appearance PiedraApp = new Appearance();
