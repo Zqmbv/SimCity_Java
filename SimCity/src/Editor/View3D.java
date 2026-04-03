@@ -40,30 +40,26 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
         Camera.getTransform(Camera_T);
         Camera_T.get(Pos); 
     
-        AddModel(new Residencial(),6,8); 
-        AddModel(new Comercial(),9,8); 
-        AddModel(new Industrial(),12,8);
-        
-        AddModel(new CoalPowerPlant(),6,4); 
-        AddModel(new NuclearPowerPlant(),10,4);         
-        
-        AddModel(new PoliceStation(),0,6); 
-        AddModel(new FireStation(),3,6);          
 
-        AddModel(new Airport(),0,0); 
-        AddModel(new Seaport(),6,0); 
-        AddModel(new Stadium(),10,0);
+
+        //AddModel(new Residencial(),0*3,0*3);  
+        //AddModel(new Comercial(),1*3,0*3); 
+        //AddModel(new Industrial(),2*3,0*3); 
         
-        AddModel(new Road(),0,9); 
-        AddModel(new Wire(),1,9); 
-        AddModel(new Park(),2,9);
-        AddModel(new Rail(),3,9);         
+        AddModel(new CoalPowerPlant(),0,0); 
+        AddModel(new NuclearPowerPlant(),4,4); 
+        
+        //AddModel(new Park(),0,3); 
+        //AddModel(new Road(),1,3); 
+        //AddModel(new Rail(),2,3); 
+        //AddModel(new Wire(),3,3);
+       
     }
     
     public BranchGroup Scene3D(){
         BranchGroup root = new BranchGroup();
 
-        DirectionalLight Light = new DirectionalLight(new Color3f(Color.white),new Vector3f(0.5f,-0.5f,-0.5f));
+        DirectionalLight Light = new DirectionalLight(new Color3f(Color.white),new Vector3f(-0.5f,-0.5f,-0.5f));
         Light.setInfluencingBounds(new BoundingSphere(new Point3d(0,0,0), 1000.0));
         
         Background bg = new Background(new Color3f(0.255f, 0.812f, 0.969f));
@@ -79,6 +75,7 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
         Material matBase = new Material();
         matBase.setDiffuseColor(new Color3f(Color.white));
         appBase.setMaterial(matBase);        
+        
         
         Transform3D Move  = new Transform3D();
         Move.setTranslation(new Vector3f(Inspector.MAP_WIDTH,0,Inspector.MAP_HEIGHT));

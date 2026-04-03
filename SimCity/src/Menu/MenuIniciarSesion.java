@@ -35,7 +35,7 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
             + "* Al menos 1 Caracter especial.\n"
             + "* Sin espacios entre carácteres.";
     
-    private MenuAlcaldes MenuPadre;
+    private Menu MenuPadre;
     
     int dniAlcalde;
 
@@ -54,7 +54,7 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
     GridBagLayout GBL = new GridBagLayout();
     GridBagConstraints GBC = new GridBagConstraints();
   
-    public MenuIniciarSesion(MenuAlcaldes MenuPadre, int dniAlcalde){
+    public MenuIniciarSesion(Menu MenuPadre, int dniAlcalde){
         this.MenuPadre = MenuPadre;
         this.dniAlcalde = dniAlcalde;
         
@@ -103,7 +103,6 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
         add(pBoton,BorderLayout.SOUTH);
         
         pTitulo.setLayout(GBL);
-        GBC.insets = new Insets(10, 10, 10, 10);
         GBC.anchor = GridBagConstraints.CENTER;
         GBC.gridx = 0; GBC.gridy = 0; pTitulo.add(lMenuTitulo,GBC); 
         
@@ -169,6 +168,7 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
         
         // INSERTAR LOS DATOS UNA VEZ VERIFICADOS
         String Query = "SELECT id,nombre,apellido,dni FROM alcaldes WHERE dni = ? and clave = ? LIMIT 1";
+        
         Object values[] = {dniAlcalde,sClave};
         try {
             ConexionPostgres BDD = new ConexionPostgres();
@@ -189,12 +189,21 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
             
             // MENSAJE DE EXITO!
             JOptionPane.showMessageDialog(this,"¡Bienvenido a SimCity Java, "+TUPLA.get(1)+"!","ÉXITO",JOptionPane.INFORMATION_MESSAGE);
+            Menu.idalcalde=-1;
+            Menu.idalcalde=Integer.parseInt(TUPLA.get(0).toString());
+            
+            
             MenuPadre.setEnableButtons(true);
+            MenuPadre.actualizarAPanelCiudades();
+            MenuPadre.setPosition2();
+         
+             
+            
+            
             this.dispose();
             
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this,ex.getMessage());
-            return;
         }
 
     }

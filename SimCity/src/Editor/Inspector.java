@@ -8,8 +8,8 @@ import static java.util.Map.entry;
 public class Inspector extends JPanel implements ActionListener {
     
     //MAP
-    static int MAP_WIDTH = 32;
-    static int MAP_HEIGHT = 32; 
+    static int MAP_WIDTH = 10;
+    static int MAP_HEIGHT = 10; 
     
     //DATA UNITARIO(1,1,1)
     static class Tile{
