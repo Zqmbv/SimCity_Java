@@ -51,7 +51,7 @@ public class MenuCiudades extends JPanel implements ActionListener{
     JLabel lMenuTitulo = new JLabel("MENÚ CIUDADES GUARDADAS");
     
     JPanel pCiuades = new JPanel();
-    JScrollPane spCiuades = new JScrollPane(pCiuades);
+    JScrollPane spCiudades = new JScrollPane(pCiuades);
     ArrayList<JCiudad> JCiudades;
     JLabel lNoData = new JLabel("No hay ciudades registradas.");
     
@@ -74,13 +74,13 @@ public class MenuCiudades extends JPanel implements ActionListener{
     public void setTema(){
         pTitulo.setBackground(cBarra);
         pCiuades.setBackground(cFondo);
-        spCiuades.setBackground(cFondo);
-        spCiuades.setOpaque(false);
+        spCiudades.setBackground(cFondo);
+        spCiudades.setOpaque(false);
         pBoton.setBackground(cBarra);
         
         lNoData.setFont(fTexto);
         
-        spCiuades.setBorder(BorderFactory.createEmptyBorder());
+        spCiudades.setBorder(BorderFactory.createEmptyBorder());
         
         bAgregar.setBackground(cBoton1); 
         bAgregar.setForeground(cText2); 
@@ -202,14 +202,14 @@ public class MenuCiudades extends JPanel implements ActionListener{
         bVolver.addActionListener(this);
         bEditAlcalde.addActionListener(this);
         bElimAlcalde.addActionListener(this);
-        spCiuades.getVerticalScrollBar().setUnitIncrement(12);
+        spCiudades.getVerticalScrollBar().setUnitIncrement(12);
     }
     
     public void setPosition() throws SQLException{
         setLayout(new BorderLayout());
         
         add(pTitulo,BorderLayout.NORTH);
-        add(spCiuades,BorderLayout.CENTER);
+        add(spCiudades,BorderLayout.CENTER);
         add(pBoton,BorderLayout.SOUTH);
         
         pTitulo.setLayout(GBL);
