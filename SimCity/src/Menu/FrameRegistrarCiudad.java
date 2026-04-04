@@ -173,17 +173,15 @@ public final class FrameRegistrarCiudad extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         String sNombreCiudad = tfNombreCiudad.getText().trim();
-        String sTamaño = cbDimension.getSelectedItem().toString().trim();
-        String[] partes = sTamaño.split("\\*");
+        String sDimension = cbDimension.getSelectedItem().toString().trim();
+        String[] partes = sDimension.split("\\*");
         int x = Integer.parseInt(partes[0]);
         int y = Integer.parseInt(partes[1]);
         String sDescripcion = tfDescripcion.getText().trim();
 
         // VERIFICAR DATOS NO INGRESADOS 
         String sCamposFaltantes = "";
-        sCamposFaltantes += getCamposFaltantes(sNombreCiudad,       "* Nombre Ciudad\n");
-        sCamposFaltantes += getCamposFaltantes(sTamaño,             "* Dimensión \n");
-        sCamposFaltantes += getCamposFaltantes(sDescripcion,        "* Descripción\n");
+        sCamposFaltantes += getCamposFaltantes(sNombreCiudad,"* Nombre Ciudad\n");
  
         if(!sCamposFaltantes.equals("")){
             JOptionPane.showMessageDialog(this,"CAMPOS FALTANTES:\n"+sCamposFaltantes,"ERROR",JOptionPane.ERROR_MESSAGE);
@@ -214,6 +212,10 @@ public final class FrameRegistrarCiudad extends JFrame implements ActionListener
         if(sDescripcion.length() > MAX_LOGITUD_DESCRIPCION){
             JOptionPane.showMessageDialog(this,"Descripción no más de "+MAX_LOGITUD_DESCRIPCION+" caracteres.","ERROR",JOptionPane.ERROR_MESSAGE);
             return;
+        }
+        
+        if(sDescripcion.equals("")){
+            sDescripcion = "Una próspera ciudad en crecimiento.";
         }
 
         // INSERTAR LOS DATOS UNA VEZ VERIFICADOS
