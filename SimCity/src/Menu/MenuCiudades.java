@@ -202,6 +202,7 @@ public class MenuCiudades extends JPanel implements ActionListener{
         bVolver.addActionListener(this);
         bEditAlcalde.addActionListener(this);
         bElimAlcalde.addActionListener(this);
+        spCiuades.getVerticalScrollBar().setUnitIncrement(12);
     }
     
     public void setPosition() throws SQLException{
