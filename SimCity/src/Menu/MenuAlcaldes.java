@@ -22,20 +22,20 @@ class JAlcalde{
 
 public class MenuAlcaldes extends JPanel implements ActionListener{
     
-    Font fTitulo = new Font("Segoe UI",Font.BOLD,18);
-    Font fSubTitulo = new Font("Segoe UI",Font.BOLD,13);
-    Font fTexto = new Font("Segoe UI",Font.PLAIN,13);
+    private final Font fTitulo = new Font("Segoe UI",Font.BOLD,18);
+    private final Font fSubTitulo = new Font("Segoe UI",Font.BOLD,13);
+    private final Font fTexto = new Font("Segoe UI",Font.PLAIN,13);
     
-    Color cBarra = new Color(230,230,230); 
-    Color cLabel = new Color(240,240,240); 
-    Color cFondo = new Color(215,215,215); 
-    Color cBoton1 = new Color(0,112,192); 
-    Color cBoton2 = new Color(0,176,80); 
-    Color cText1 = new Color(0,0,0); 
-    Color cText2 = new Color(255,255,255); 
+    private final Color cBarra = new Color(230,230,230); 
+    private final Color cLabel = new Color(240,240,240); 
+    private final Color cFondo = new Color(215,215,215); 
+    private final Color cBotonEstandar = new Color(0,112,192); 
+    private final Color cBotonAcceder = new Color(0,176,80); 
+    private final Color cText1 = new Color(0,0,0); 
+    private final Color cText2 = new Color(255,255,255); 
 
     JPanel pTitulo = new JPanel();
-    JLabel lMenuTitulo = new JLabel("MENÚ PARTIDAS GUARDADAS");
+    JLabel lMenuTitulo = new JLabel("MENÚ ALCALDES GUARDADOS");
     
     JPanel pAlcaldes = new JPanel();
     JScrollPane spAlcaldes = new JScrollPane(pAlcaldes);
@@ -44,7 +44,7 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
     
     JPanel pBoton = new JPanel();
     JButton bAgregar = new JButton("Agregar Alcalde");
-    JButton bVolver = new JButton("Volver");
+    JButton bVolver = new JButton("<- Volver");
     
     GridBagLayout GBL = new GridBagLayout();
     GridBagConstraints GBC = new GridBagConstraints();
@@ -68,11 +68,11 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
         
         spAlcaldes.setBorder(BorderFactory.createEmptyBorder());
         
-        bAgregar.setBackground(cBoton1); 
+        bAgregar.setBackground(cBotonEstandar); 
         bAgregar.setForeground(cText2); 
         bAgregar.setFont(fSubTitulo);
         
-        bVolver.setBackground(cBoton1); 
+        bVolver.setBackground(cBotonEstandar); 
         bVolver.setForeground(cText2); 
         bVolver.setFont(fSubTitulo);
         
@@ -83,7 +83,10 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
    
         // CONSULTAR LOS ALCALDES EN LA BDD
         ConexionPostgres BDD = new ConexionPostgres();
-        ResultSet RS = BDD.consultar("SELECT id,nombre,apellido,dni FROM alcaldes",null);
+        ResultSet RS = BDD.consultar(
+                "SELECT alcaldes.id,alcaldes.nombre,alcaldes.apellido,alcaldes.dni,COUNT(ciudades.id) AS numCiudades " +
+                "FROM alcaldes LEFT JOIN ciudades ON alcaldes.id = ciudades.idAlcalde " +
+                "GROUP BY alcaldes.id ORDER BY alcaldes.id ASC",null);
         TUPLAS = new ArrayList<>();
         
         // OBTENER RESULTADO Y ALMACENARLO EN UNA ARRAYLIST TIPO OBJECT
@@ -93,6 +96,7 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
             T.add(RS.getString("nombre"));
             T.add(RS.getString("apellido"));
             T.add(RS.getString("dni"));
+            T.add(RS.getString("numCiudades"));
             TUPLAS.add(T);
         }
         
@@ -108,7 +112,15 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
         
         // SI EXISTEN, MOSTRAMOS NOMBRE + APELLIDO + DNI DE CADA ALCALDE
         for(ArrayList<Object> T: TUPLAS){
-            JAlcaldes.add(new JAlcalde("  "+(String) T.get(1)+" "+(String) T.get(2)+" - "+(String) T.get(3)));
+            String sNombre = (String) T.get(1);
+            String sApellido = (String) T.get(2);
+            String sDNI = (String) T.get(3);
+            String sNumCiudades = (Integer.parseInt((String)T.get(4)) == 1) ? "("+(String)T.get(4)+" Ciudad)" : "("+(String)T.get(4)+" Ciudades)"; 
+ 
+            JAlcaldes.add(new JAlcalde("<html>"
+            + "<b>"+sNombre+" "+sApellido+" - "+sNumCiudades+"</b>"
+            + "<br>"+sDNI
+            + "</html>"));
         }
         
         GBC.anchor = GridBagConstraints.NORTH; GBC.fill = GridBagConstraints.HORIZONTAL;
@@ -135,7 +147,7 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
             actualJAlcalde.lAlcalde.setOpaque(true); 
             actualJAlcalde.lAlcalde.setFont(fTexto); 
             
-            actualJAlcalde.bAcceder.setBackground(cBoton2); 
+            actualJAlcalde.bAcceder.setBackground(cBotonAcceder); 
             actualJAlcalde.bAcceder.setForeground(cText2); 
             actualJAlcalde.bAcceder.setFont(fSubTitulo); 
         }
@@ -190,7 +202,7 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
             JAlcalde actualJAlcalde = JAlcaldes.get(i);
             if(ae.getSource() == actualJAlcalde.bAcceder){
                 setEnableButtons(false);
-                new MenuIniciarSesion(this,Integer.parseInt(TUPLAS.get(i).get(3).toString()));
+                new FrameIniciarSesion(this,Integer.parseInt(TUPLAS.get(i).get(3).toString()));
             }
         }
     }
@@ -210,7 +222,7 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
         if(ae.getSource()==bAgregar){
             try {
                 setEnableButtons(false);
-                new MenuRegistrarAlcalde(this);   
+                new FrameRegistrarAlcalde(this);   
             } catch (SQLException ex) {}
         }
         if(ae.getSource() == bVolver){

@@ -2,6 +2,8 @@ package Menu;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,8 +11,20 @@ import javax.media.j3d.*;
 import javax.swing.*;
 import javax.vecmath.*;
 
-public class MenuPrincipal extends JPanel {
-
+public class MenuPrincipal extends JPanel implements ActionListener{
+    
+    JPanel pSur = new JPanel(new BorderLayout());
+    JPanel pBotones = new JPanel();
+    JButton bJugar = crearBoton("JUGAR");
+    JButton bSalir = crearBoton("SALIR");
+    
+    JLabel lIntegrantes = new JLabel("<html>"
+            + "<b>Integrantes:</b>"
+            + "<br>Escola, Sebastian C.I. 31.884.003"
+            + "<br>Pedrique, Jose C.I. 31.333.931"
+            + "<br>Zambuchini, Maurizio C.I. 31.544.986"
+            + "</html>");
+    
     public MenuPrincipal() {
         setLayout(new BorderLayout());
         
@@ -18,41 +32,18 @@ public class MenuPrincipal extends JPanel {
         Canvas3D canvas = new Canvas3D(config);
         add(canvas, BorderLayout.CENTER);
         
-        JPanel pSur = new JPanel(new BorderLayout());
         pSur.setOpaque(true);
         pSur.setBackground(new Color(15, 45, 75)); 
         pSur.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
         
-        JLabel lIntegrantes = new JLabel("<html><b>Integrantes:</b><br>Escola, Sebastian C.I. 31.884.003<br>Pedrique, Jose C.I. 31.333.931<br>Zambuchini, Maurizio C.I. 31.544.986</html>");
         lIntegrantes.setForeground(Color.WHITE);
         lIntegrantes.setFont(new Font("Arial", Font.PLAIN, 12));
         pSur.add(lIntegrantes, BorderLayout.WEST);
-        
-        JPanel pBotones = new JPanel();
+  
         pBotones.setOpaque(false);
         
-        JButton bJugar = crearBoton("JUGAR");
-        JButton bSalir = crearBoton("SALIR");
-        
-        bJugar.addActionListener(e -> {
-            JFrame ventanaPadre = (JFrame) SwingUtilities.getWindowAncestor(this);
-            
-            if (ventanaPadre != null) {
-                ventanaPadre.remove(this); 
-
-                try {
-                    ventanaPadre.add(new MenuAlcaldes());
-                } catch (SQLException ex) {
-                    Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                ventanaPadre.revalidate();
-                ventanaPadre.repaint();
-            }
-        });
-        
-        bSalir.addActionListener(e -> {
-            System.exit(0);
-        });
+        bJugar.addActionListener(this);
+        bSalir.addActionListener(this);
         
         pBotones.add(bJugar);
         pBotones.add(bSalir);
@@ -103,8 +94,8 @@ public class MenuPrincipal extends JPanel {
         gradientQuad.setCoordinate(2, new Point3d( 1.0,  1.0, -1.0));
         gradientQuad.setCoordinate(3, new Point3d(-1.0,  1.0, -1.0));
 
-        Color3f celesteClaro = new Color3f(0.5f, 0.8f, 1.0f);  
-        Color3f celesteOscuro = new Color3f(0.1f, 0.4f, 0.6f); 
+        Color3f celesteClaro = new Color3f(0.2f, 0.9f, 1.0f);  
+        Color3f celesteOscuro = new Color3f(0.1f, 0.3f, 0.5f); 
         
         gradientQuad.setColor(0, celesteClaro);  
         gradientQuad.setColor(1, celesteClaro);  
@@ -124,7 +115,7 @@ public class MenuPrincipal extends JPanel {
         objRoot.addChild(tgTextoSimCity);
 
         Transform3D posSimCity = new Transform3D();
-        posSimCity.setTranslation(new Vector3f(0f, 0.35f, 0f));
+        posSimCity.setTranslation(new Vector3f(0f, 0.3f, 0f));
         tgTextoSimCity.setTransform(posSimCity);
 
         Font3D font3DSimCity = new Font3D(new Font("Arial", Font.BOLD, 1), new FontExtrusion());
@@ -199,5 +190,22 @@ public class MenuPrincipal extends JPanel {
         objRoot.addChild(DL);
         
         return objRoot;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        if(ae.getSource() == bJugar){
+            JFrame ventanaPadre = (JFrame) SwingUtilities.getWindowAncestor(this);
+            if (ventanaPadre != null) {
+                ventanaPadre.remove(this); 
+                try { ventanaPadre.add(new MenuAlcaldes());
+                } catch (SQLException ex) {Logger.getLogger(MenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);}
+                ventanaPadre.revalidate();
+                ventanaPadre.repaint();
+            }
+        }
+        if(ae.getSource() == bSalir){
+            System.exit(0);
+        }
     }
 }

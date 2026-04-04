@@ -1,14 +1,38 @@
 
 -- CREATE DATABASE SimCityBD; 
 
-CREATE TABLE IF NOT EXISTS alcaldes (
+CREATE TABLE IF NOT EXISTS alcaldes(
 	id SERIAL PRIMARY KEY,
 	nombre VARCHAR(64) NOT NULL,
 	apellido VARCHAR(64) NOT NULL,
 	dni INTEGER UNIQUE NOT NULL,
 	genero VARCHAR(16) NOT NULL,
-	clave VARCHAR(32) NOT NULL,
+	clave VARCHAR(32) NOT NULL
 	CONSTRAINT validar_genero CHECK (genero IN ('Masculino', 'Femenino', 'Otro'))
 );
 
-SELECT * FROM alcaldes
+CREATE TABLE IF NOT EXISTS ciudades(
+	id SERIAL PRIMARY KEY,
+	nombre VARCHAR(64) NOT NULL,
+	x INT NOT NULL,
+	y INT NOT NULL,
+	poblacion INT DEFAULT 0 NOT NULL,
+	descripcion VARCHAR(100) NOT NULL,
+	fechaCreado TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+	idAlcalde INT NOT NULL,
+	CONSTRAINT uq_ciudad_alcalde UNIQUE (nombre, idAlcalde),
+	CONSTRAINT fk_alcalde FOREIGN KEY (idAlcalde) 
+	REFERENCES alcaldes(id) ON DELETE CASCADE	
+);
+
+CREATE TABLE IF NOT EXISTS tiles(
+	id SERIAL PRIMARY KEY,
+	idCiudad INTEGER NOT NULL,
+	tipo VARCHAR(64) NOT NULL,
+	posx INT NOT NULL,
+	posy INT NOT NULL,
+	dimension INT NOT NULL,
+	rotacion DECIMAL NOT NULL,
+	CONSTRAINT fk_ciudad FOREIGN KEY (idCiudad) 
+	REFERENCES ciudades(id) ON DELETE CASCADE
+);
