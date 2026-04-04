@@ -1,6 +1,5 @@
 package BDD;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -65,7 +64,7 @@ public class ConexionPostgres {
     
             int filasAfectadas = PS.executeUpdate();
             if (filasAfectadas > 0) {
-                System.out.println("¡BIEN CHÉVERE!");
+                System.out.println("Comando DML Ejecutado Correctamente.");
             }
             
         } catch(SQLException SQLE) {
