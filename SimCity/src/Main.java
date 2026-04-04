@@ -1,5 +1,3 @@
-import Menu.FrameRegistrarCiudad;
-import Menu.MenuCiudades;
 import javax.swing.JFrame;
 import Menu.MenuPrincipal;
 import java.sql.SQLException;
