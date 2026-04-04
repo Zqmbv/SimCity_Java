@@ -50,8 +50,8 @@ public class MenuCiudades extends JPanel implements ActionListener{
     JButton bElimAlcalde = new JButton("Eliminar Alcalde");
     JLabel lMenuTitulo = new JLabel("MENÚ CIUDADES GUARDADAS");
     
-    JPanel pCiuades = new JPanel();
-    JScrollPane spCiudades = new JScrollPane(pCiuades);
+    JPanel pCiudades = new JPanel();
+    JScrollPane spCiudades = new JScrollPane(pCiudades);
     ArrayList<JCiudad> JCiudades;
     JLabel lNoData = new JLabel("No hay ciudades registradas.");
     
@@ -73,7 +73,7 @@ public class MenuCiudades extends JPanel implements ActionListener{
     
     public void setTema(){
         pTitulo.setBackground(cBarra);
-        pCiuades.setBackground(cFondo);
+        pCiudades.setBackground(cFondo);
         spCiudades.setBackground(cFondo);
         spCiudades.setOpaque(false);
         pBoton.setBackground(cBarra);
@@ -123,11 +123,11 @@ public class MenuCiudades extends JPanel implements ActionListener{
         
         // LIMPIAMOS TODO EL PANEL
         JCiudades = new ArrayList<>();
-        pCiuades.removeAll();
+        pCiudades.removeAll();
         
         // SI NO HAY CIUDADES REGISTRADAS TODAVIA
         if(TUPLAS.isEmpty()){
-            GBC.gridx = 0; GBC.gridy = 0; GBC.weightx = 0; GBC.gridwidth = 1; GBC.insets = new Insets(10,10,10,10); pCiuades.add(lNoData,GBC);
+            GBC.gridx = 0; GBC.gridy = 0; GBC.weightx = 0; GBC.gridwidth = 1; GBC.insets = new Insets(10,10,10,10); pCiudades.add(lNoData,GBC);
             return;
         }
         
@@ -154,10 +154,10 @@ public class MenuCiudades extends JPanel implements ActionListener{
             
             int top = (i==0) ? 20 : 10;
        
-            GBC.gridx = 0; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,70,10,5); pCiuades.add(actualJCiudad.bIniciar,GBC);
-            GBC.gridx = 1; GBC.gridy = i; GBC.weightx = 1; GBC.insets = new Insets(top,5,10,5); pCiuades.add(actualJCiudad.lCiudad,GBC);
-            GBC.gridx = 3; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,5,10,5); pCiuades.add(actualJCiudad.bEditar,GBC);
-            GBC.gridx = 4; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,5,10,70); pCiuades.add(actualJCiudad.bEliminar,GBC);
+            GBC.gridx = 0; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,70,10,5); pCiudades.add(actualJCiudad.bIniciar,GBC);
+            GBC.gridx = 1; GBC.gridy = i; GBC.weightx = 1; GBC.insets = new Insets(top,5,10,5); pCiudades.add(actualJCiudad.lCiudad,GBC);
+            GBC.gridx = 3; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,5,10,5); pCiudades.add(actualJCiudad.bEditar,GBC);
+            GBC.gridx = 4; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,5,10,70); pCiudades.add(actualJCiudad.bEliminar,GBC);
             
             actualJCiudad.bIniciar.setPreferredSize(new Dimension(100,60));
             actualJCiudad.bEditar.setPreferredSize(new Dimension(90,60));
@@ -191,10 +191,10 @@ public class MenuCiudades extends JPanel implements ActionListener{
         // ESTO HACE QUE LOS COMPONENTES SE QUEDEN PEGADOS EN EL NORTE Y SE EXTENDERÁ HASTA ABAJO.
         GBC.anchor = GridBagConstraints.NORTH; GBC.fill = GridBagConstraints.HORIZONTAL;
         GBC.weightx = 1; GBC.weighty = 1;
-        GBC.gridx = 0; GBC.gridy = 9999; GBC.gridwidth = 2; pCiuades.add(new JLabel(""),GBC);
+        GBC.gridx = 0; GBC.gridy = 9999; GBC.gridwidth = 2; pCiudades.add(new JLabel(""),GBC);
         
-        pCiuades.revalidate();
-        pCiuades.repaint();
+        pCiudades.revalidate();
+        pCiudades.repaint();
     }
     
     public void setConfigComponente(){
@@ -238,7 +238,7 @@ public class MenuCiudades extends JPanel implements ActionListener{
         GBC.insets = new Insets(5, 5, 5, 10);
         GBC.gridx = 2; GBC.gridy = 0; pBoton.add(bElimAlcalde, GBC);
      
-        pCiuades.setLayout(GBL);  
+        pCiudades.setLayout(GBL);  
         actualizarPanelCiudades();
     }
     
