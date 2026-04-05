@@ -189,6 +189,7 @@ public final class FrameModificarCiudad extends JFrame implements ActionListener
         // VERIFICAR DATOS NO INGRESADOS 
         String sCamposFaltantes = "";
         sCamposFaltantes += getCamposFaltantes(sNombreCiudad,       "* Nombre Ciudad\n");
+        sCamposFaltantes += getCamposFaltantes(sDescripcion,        "* Descripción\n");
  
         if(!sCamposFaltantes.equals("")){
             JOptionPane.showMessageDialog(this,"CAMPOS FALTANTES:\n"+sCamposFaltantes,"ERROR",JOptionPane.ERROR_MESSAGE);
@@ -220,11 +221,7 @@ public final class FrameModificarCiudad extends JFrame implements ActionListener
             JOptionPane.showMessageDialog(this,"Descripción no más de "+MAX_LOGITUD_DESCRIPCION+" caracteres.","ERROR",JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        if(sDescripcion.equals("")){
-            sDescripcion = "Una próspera ciudad en crecimiento.";
-        }
-        
+
         // ACTUALIZAR LOS DATOS UNA VEZ VERIFICADOS
         ConexionPostgres BDD = new ConexionPostgres();
         String Query = "UPDATE ciudades SET nombre = ?, descripcion = ? WHERE id = ?;";

@@ -18,11 +18,11 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
     SimpleUniverse SU = new SimpleUniverse(canvas);   
     
     TransformGroup Camera = SU.getViewingPlatform().getViewPlatformTransform();
-    Vector3f Pos = new Vector3f();
+    Vector3f Pos = new Vector3f(1.5f,20f,1.5f);
     Vector2f LastAngle = new Vector2f();
-    Vector2f Angle = new Vector2f(0,0);    
+    Vector2f Angle = new Vector2f((float)Math.toRadians(-90),0);    
     float sensibility = 0.005f;     
-    float velocity = 0.1f;
+    float velocity = 1f;
     
     public View3D(){
         this.setLayout(new BorderLayout());
@@ -35,10 +35,7 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
         newScene.compile();
         SU.addBranchGraph(newScene);
         
-        //Init Camera
-        Transform3D Camera_T = new Transform3D();
-        Camera.getTransform(Camera_T);
-        Camera_T.get(Pos);        
+        CamUpdate(Pos, Angle);
     }
     
     public BranchGroup Scene3D(){
@@ -117,34 +114,33 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
     public void rotarHijoInterno(BranchGroup wrapper, double anguloRad) {
         TransformGroup tgInterno = (TransformGroup) wrapper.getChild(0);
 
-        // 2. Leer la transformación actual
         Transform3D t3d = new Transform3D();
         tgInterno.getTransform(t3d);
 
-        // 3. Crear la nueva rotación (ejemplo en el eje Y)
         Transform3D nuevaRot = new Transform3D();
         nuevaRot.rotY((float)Math.toRadians(anguloRad));
 
-        // 4. Combinar y aplicar
         t3d.mul(nuevaRot); 
         tgInterno.setTransform(t3d);
     }
      
-   public void CamUpdate(){
+   public void CamUpdate(Vector3f POS, Vector2f ROT){
         Transform3D Cam_T = new Transform3D();
         Transform3D rotX = new Transform3D();
         Transform3D rotY = new Transform3D();
 
-        rotX.rotY(Angle.y);
-        rotY.rotX(Angle.x);
+        rotX.rotY(ROT.y);
+        rotY.rotX(ROT.x);
 
         Cam_T.mul(rotX);
         Cam_T.mul(rotY);
     
-        Cam_T.setTranslation(Pos);
-        Camera.setTransform(Cam_T);   
+        Cam_T.setTranslation(POS);
+        Camera.setTransform(Cam_T);
+        Pos = POS;
+        Angle = ROT;
    }
-
+   
     @Override
     public void keyPressed(KeyEvent e) {    
         Transform3D Camera_T = new Transform3D();
@@ -172,7 +168,7 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
             Pos = new Vector3f(Pos.x + forward.x, Pos.y + forward.y, Pos.z + forward.z);
         }        
         
-        CamUpdate();
+        CamUpdate(Pos,Angle);
     }
 
     @Override
@@ -183,7 +179,7 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
         Angle.y -= dx * sensibility;
         Angle.x -= dy * sensibility;
 
-        CamUpdate();
+        CamUpdate(Pos,Angle);
         
         LastAngle.y = e.getX();
         LastAngle.x = e.getY();

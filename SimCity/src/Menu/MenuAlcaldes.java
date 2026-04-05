@@ -83,7 +83,7 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
    
         // CONSULTAR LOS ALCALDES EN LA BDD
         ConexionPostgres BDD = new ConexionPostgres();
-        ResultSet RS = BDD.consultar(
+         ResultSet RS = BDD.consultar(
                 "SELECT alcaldes.id,alcaldes.nombre,alcaldes.apellido,alcaldes.dni,COUNT(ciudades.id) AS numCiudades " +
                 "FROM alcaldes LEFT JOIN ciudades ON alcaldes.id = ciudades.idAlcalde " +
                 "GROUP BY alcaldes.id ORDER BY alcaldes.id ASC",null);
@@ -164,7 +164,6 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
     public void setConfigComponente(){
         bAgregar.addActionListener(this);
         bVolver.addActionListener(this);
-        spAlcaldes.getVerticalScrollBar().setUnitIncrement(12);
     }
     
     public void setPosition() throws SQLException{

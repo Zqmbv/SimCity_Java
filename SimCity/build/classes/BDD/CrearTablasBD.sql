@@ -31,7 +31,6 @@ CREATE TABLE IF NOT EXISTS tiles(
 	tipo VARCHAR(64) NOT NULL,
 	posx INT NOT NULL,
 	posy INT NOT NULL,
-	dimension INT NOT NULL,
 	rotacion DECIMAL NOT NULL,
 	CONSTRAINT fk_ciudad FOREIGN KEY (idCiudad) 
 	REFERENCES ciudades(id) ON DELETE CASCADE

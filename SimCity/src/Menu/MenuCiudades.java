@@ -1,6 +1,7 @@
 package Menu;
 
 import BDD.ConexionPostgres;
+import Editor.Inspector;
 import java.sql.ResultSet;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -50,8 +51,8 @@ public class MenuCiudades extends JPanel implements ActionListener{
     JButton bElimAlcalde = new JButton("Eliminar Alcalde");
     JLabel lMenuTitulo = new JLabel("MENÚ CIUDADES GUARDADAS");
     
-    JPanel pCiudades = new JPanel();
-    JScrollPane spCiudades = new JScrollPane(pCiudades);
+    JPanel pCiuades = new JPanel();
+    JScrollPane spCiuades = new JScrollPane(pCiuades);
     ArrayList<JCiudad> JCiudades;
     JLabel lNoData = new JLabel("No hay ciudades registradas.");
     
@@ -73,14 +74,14 @@ public class MenuCiudades extends JPanel implements ActionListener{
     
     public void setTema(){
         pTitulo.setBackground(cBarra);
-        pCiudades.setBackground(cFondo);
-        spCiudades.setBackground(cFondo);
-        spCiudades.setOpaque(false);
+        pCiuades.setBackground(cFondo);
+        spCiuades.setBackground(cFondo);
+        spCiuades.setOpaque(false);
         pBoton.setBackground(cBarra);
         
         lNoData.setFont(fTexto);
         
-        spCiudades.setBorder(BorderFactory.createEmptyBorder());
+        spCiuades.setBorder(BorderFactory.createEmptyBorder());
         
         bAgregar.setBackground(cBoton1); 
         bAgregar.setForeground(cText2); 
@@ -123,11 +124,11 @@ public class MenuCiudades extends JPanel implements ActionListener{
         
         // LIMPIAMOS TODO EL PANEL
         JCiudades = new ArrayList<>();
-        pCiudades.removeAll();
+        pCiuades.removeAll();
         
         // SI NO HAY CIUDADES REGISTRADAS TODAVIA
         if(TUPLAS.isEmpty()){
-            GBC.gridx = 0; GBC.gridy = 0; GBC.weightx = 0; GBC.gridwidth = 1; GBC.insets = new Insets(10,10,10,10); pCiudades.add(lNoData,GBC);
+            GBC.gridx = 0; GBC.gridy = 0; GBC.weightx = 0; GBC.gridwidth = 1; GBC.insets = new Insets(10,10,10,10); pCiuades.add(lNoData,GBC);
             return;
         }
         
@@ -154,10 +155,10 @@ public class MenuCiudades extends JPanel implements ActionListener{
             
             int top = (i==0) ? 20 : 10;
        
-            GBC.gridx = 0; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,70,10,5); pCiudades.add(actualJCiudad.bIniciar,GBC);
-            GBC.gridx = 1; GBC.gridy = i; GBC.weightx = 1; GBC.insets = new Insets(top,5,10,5); pCiudades.add(actualJCiudad.lCiudad,GBC);
-            GBC.gridx = 3; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,5,10,5); pCiudades.add(actualJCiudad.bEditar,GBC);
-            GBC.gridx = 4; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,5,10,70); pCiudades.add(actualJCiudad.bEliminar,GBC);
+            GBC.gridx = 0; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,70,10,5); pCiuades.add(actualJCiudad.bIniciar,GBC);
+            GBC.gridx = 1; GBC.gridy = i; GBC.weightx = 1; GBC.insets = new Insets(top,5,10,5); pCiuades.add(actualJCiudad.lCiudad,GBC);
+            GBC.gridx = 3; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,5,10,5); pCiuades.add(actualJCiudad.bEditar,GBC);
+            GBC.gridx = 4; GBC.gridy = i; GBC.weightx = 0; GBC.insets = new Insets(top,5,10,70); pCiuades.add(actualJCiudad.bEliminar,GBC);
             
             actualJCiudad.bIniciar.setPreferredSize(new Dimension(100,60));
             actualJCiudad.bEditar.setPreferredSize(new Dimension(90,60));
@@ -191,10 +192,10 @@ public class MenuCiudades extends JPanel implements ActionListener{
         // ESTO HACE QUE LOS COMPONENTES SE QUEDEN PEGADOS EN EL NORTE Y SE EXTENDERÁ HASTA ABAJO.
         GBC.anchor = GridBagConstraints.NORTH; GBC.fill = GridBagConstraints.HORIZONTAL;
         GBC.weightx = 1; GBC.weighty = 1;
-        GBC.gridx = 0; GBC.gridy = 9999; GBC.gridwidth = 2; pCiudades.add(new JLabel(""),GBC);
+        GBC.gridx = 0; GBC.gridy = 9999; GBC.gridwidth = 2; pCiuades.add(new JLabel(""),GBC);
         
-        pCiudades.revalidate();
-        pCiudades.repaint();
+        pCiuades.revalidate();
+        pCiuades.repaint();
     }
     
     public void setConfigComponente(){
@@ -202,14 +203,13 @@ public class MenuCiudades extends JPanel implements ActionListener{
         bVolver.addActionListener(this);
         bEditAlcalde.addActionListener(this);
         bElimAlcalde.addActionListener(this);
-        spCiudades.getVerticalScrollBar().setUnitIncrement(12);
     }
     
     public void setPosition() throws SQLException{
         setLayout(new BorderLayout());
         
         add(pTitulo,BorderLayout.NORTH);
-        add(spCiudades,BorderLayout.CENTER);
+        add(spCiuades,BorderLayout.CENTER);
         add(pBoton,BorderLayout.SOUTH);
         
         pTitulo.setLayout(GBL);
@@ -238,7 +238,7 @@ public class MenuCiudades extends JPanel implements ActionListener{
         GBC.insets = new Insets(5, 5, 5, 10);
         GBC.gridx = 2; GBC.gridy = 0; pBoton.add(bElimAlcalde, GBC);
      
-        pCiudades.setLayout(GBL);  
+        pCiuades.setLayout(GBL);  
         actualizarPanelCiudades();
     }
     
@@ -246,7 +246,7 @@ public class MenuCiudades extends JPanel implements ActionListener{
         this.idCiudad = -1;
         
         ConexionPostgres BD = new ConexionPostgres();
-        String QUERY = "SELECT id FROM ciudades "
+        String QUERY = "SELECT id,x,y FROM ciudades "
                 + "WHERE nombre = ? AND idAlcalde = ? "
                 + "LIMIT 1;";
         Object VALUES[] = {
@@ -256,6 +256,9 @@ public class MenuCiudades extends JPanel implements ActionListener{
         ResultSet RS = BD.consultar(QUERY,VALUES);
         while(RS != null && RS.next()){
             idCiudad = Integer.parseInt(RS.getString("id"));
+            Inspector.ID_CIUDAD = Integer.parseInt(RS.getString("id"));
+            Inspector.MAP_WIDTH = Integer.parseInt(RS.getString("x"));
+            Inspector.MAP_HEIGHT = Integer.parseInt(RS.getString("y"));
         }
     }
     
@@ -264,8 +267,20 @@ public class MenuCiudades extends JPanel implements ActionListener{
             JCiudad actualJCiudades = JCiudades.get(i);
             if(ae.getSource() == actualJCiudades.bIniciar){
                 setIdCiudad(i);
-                JOptionPane.showMessageDialog(this,"MODULO JOSE\nSRC > Menu > MenuCiudades.java > Linea 267","JJ",JOptionPane.INFORMATION_MESSAGE);
-                // MODULO JOSE
+                
+                
+                
+                
+                JOptionPane.showMessageDialog(this,"Este proyecto cuenta con auto-guardado","Cargando Ciudad...",JOptionPane.INFORMATION_MESSAGE);
+                
+                JFrame framePrincipal = (JFrame) SwingUtilities.getWindowAncestor(this);
+                if (framePrincipal != null) {
+                    framePrincipal.remove(this);
+                    framePrincipal.add(new Inspector());
+
+                    framePrincipal.revalidate();
+                    framePrincipal.repaint();
+                }  
             }
             if(ae.getSource() == actualJCiudades.bEditar){
                 setIdCiudad(i);

@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
-public final class FrameRegistrarAlcalde extends JFrame implements ActionListener,WindowListener{
+public final class MenuRegistrarAlcalde extends JFrame implements ActionListener,WindowListener{
     
     private final Font fTitulo = new Font("Segoe UI",Font.BOLD,18);
     private final Font fSubTitulo = new Font("Segoe UI",Font.BOLD,13);
@@ -44,7 +44,7 @@ public final class FrameRegistrarAlcalde extends JFrame implements ActionListene
     private MenuAlcaldes MenuPadre;
     
     JPanel pTitulo = new JPanel();
-    JLabel lMenuTitulo = new JLabel("CREAR NUEVO ALCALDE");
+    JLabel lMenuTitulo = new JLabel("REGISTRAR NUEVO ALCALDE");
     
     JPanel pDatos = new JPanel();
     JLabel lNombre = new JLabel("Nombre:");
@@ -69,9 +69,9 @@ public final class FrameRegistrarAlcalde extends JFrame implements ActionListene
     GridBagLayout GBL = new GridBagLayout();
     GridBagConstraints GBC = new GridBagConstraints();
     
-    public FrameRegistrarAlcalde(MenuAlcaldes MenuPadre) throws SQLException{
+    public MenuRegistrarAlcalde(MenuAlcaldes MenuPadre) throws SQLException{
         this.MenuPadre = MenuPadre;
-        setTitle("SimCity JAVA - Registrar Alcalde");
+        setTitle("SimCity Java - Registrar Alcalde");
         
         setPosition();
         setTema();
@@ -298,7 +298,7 @@ public final class FrameRegistrarAlcalde extends JFrame implements ActionListene
             JOptionPane.showMessageDialog(this,"DNI invalido.\nEjemplo DNI: 12345678","ERROR",JOptionPane.ERROR_MESSAGE);
             return;
         } catch (SQLException ex) {
-            Logger.getLogger(FrameRegistrarAlcalde.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MenuRegistrarAlcalde.class.getName()).log(Level.SEVERE, null, ex);
             return;
         }
 
