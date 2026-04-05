@@ -57,6 +57,8 @@ public final class FrameModificarAlcalde extends JFrame implements ActionListene
     JTextField tfApellido = new JTextField();
     JTextField tfDNI = new JTextField();
     JPasswordField pfClave = new JPasswordField();
+    JToggleButton bMostrarClave = new JToggleButton("Mostrar");
+    char echoCharPorDefecto;
     
     JPanel pGenero = new JPanel();
     ButtonGroup BG = new ButtonGroup();
@@ -95,6 +97,11 @@ public final class FrameModificarAlcalde extends JFrame implements ActionListene
 
         bActualizar.setBackground(cBoton);
         bActualizar.setForeground(cText2);
+        bActualizar.setFont(fSubTitulo);
+
+        bMostrarClave.setBackground(cBoton);
+        bMostrarClave.setForeground(cText2);
+        bMostrarClave.setFont(fSubTitulo);
         
         lMenuTitulo.setFont(fTitulo);
         lNombre.setFont(fSubTitulo);
@@ -124,8 +131,6 @@ public final class FrameModificarAlcalde extends JFrame implements ActionListene
         rbOtro.setFont(fSubTitulo);
         rbOtro.setOpaque(false);
         
-        bActualizar.setFont(fSubTitulo);
-        
         // PARA PONERLE COLOR A LOS JOPTIONPANE
         UIManager.put("OptionPane.background", cFondo);
         UIManager.put("OptionPane.messageForeground",cText1);
@@ -138,6 +143,8 @@ public final class FrameModificarAlcalde extends JFrame implements ActionListene
     
     public void setConfigComponente() throws SQLException{
         bActualizar.addActionListener(this);
+        bMostrarClave.addActionListener(this);
+        echoCharPorDefecto = pfClave.getEchoChar();
         
         ConexionPostgres BD = new ConexionPostgres();
         ResultSet RS = BD.consultar("SELECT nombre,apellido,dni,genero,clave FROM alcaldes WHERE id = ?",new Object[]{this.idAlcalde});
@@ -198,14 +205,15 @@ public final class FrameModificarAlcalde extends JFrame implements ActionListene
      
         pDatos.setLayout(GBL);  
         GBC.anchor = GridBagConstraints.CENTER; GBC.fill = GridBagConstraints.BOTH;
-        GBC.gridx = 0; GBC.gridy = 0; GBC.weightx = 0; GBC.insets = new Insets(20,20,10,10); pDatos.add(lNombre,GBC); 
-        GBC.gridx = 1; GBC.gridy = 0; GBC.weightx = 1; GBC.insets = new Insets(20,10,10,20); pDatos.add(tfNombre,GBC); 
-        GBC.gridx = 0; GBC.gridy = 1; GBC.weightx = 0; GBC.insets = new Insets(10,20,10,10); pDatos.add(lApellido,GBC); 
-        GBC.gridx = 1; GBC.gridy = 1; GBC.weightx = 1; GBC.insets = new Insets(10,10,10,20); pDatos.add(tfApellido,GBC); 
-        GBC.gridx = 0; GBC.gridy = 2; GBC.weightx = 0; GBC.insets = new Insets(10,20,10,10); pDatos.add(lDNI,GBC); 
-        GBC.gridx = 1; GBC.gridy = 2; GBC.weightx = 1; GBC.insets = new Insets(10,10,10,20); pDatos.add(tfDNI,GBC); 
-        GBC.gridx = 0; GBC.gridy = 3; GBC.weightx = 0; GBC.insets = new Insets(10,20,10,10); pDatos.add(lGenero,GBC); 
-        GBC.gridx = 1; GBC.gridy = 3; GBC.weightx = 1; GBC.insets = new Insets(10,10,10,20); pDatos.add(pGenero,GBC); 
+        GBC.gridx = 0; GBC.gridy = 0; GBC.weightx = 0; GBC.gridwidth=1; GBC.insets = new Insets(20,20,10,10); pDatos.add(lNombre,GBC); 
+        GBC.gridx = 1; GBC.gridy = 0; GBC.weightx = 1; GBC.gridwidth=2; GBC.insets = new Insets(20,10,10,20); pDatos.add(tfNombre,GBC); 
+        GBC.gridx = 0; GBC.gridy = 1; GBC.weightx = 0; GBC.gridwidth=1; GBC.insets = new Insets(10,20,10,10); pDatos.add(lApellido,GBC); 
+        GBC.gridx = 1; GBC.gridy = 1; GBC.weightx = 1; GBC.gridwidth=2; GBC.insets = new Insets(10,10,10,20); pDatos.add(tfApellido,GBC); 
+        GBC.gridx = 0; GBC.gridy = 2; GBC.weightx = 0; GBC.gridwidth=1; GBC.insets = new Insets(10,20,10,10); pDatos.add(lDNI,GBC); 
+        GBC.gridx = 1; GBC.gridy = 2; GBC.weightx = 1; GBC.gridwidth=2; GBC.insets = new Insets(10,10,10,20); pDatos.add(tfDNI,GBC); 
+        GBC.gridx = 0; GBC.gridy = 3; GBC.weightx = 0; GBC.gridwidth=1; GBC.insets = new Insets(10,20,10,10); pDatos.add(lGenero,GBC); 
+        GBC.gridx = 1; GBC.gridy = 3; GBC.weightx = 1; GBC.gridwidth=2; GBC.insets = new Insets(10,10,10,20); pDatos.add(pGenero,GBC); 
+        GBC.gridwidth=1;
         
         pGenero.setLayout(GBL);
         GBC.ipady = 0;
@@ -216,7 +224,10 @@ public final class FrameModificarAlcalde extends JFrame implements ActionListene
         
         GBC.ipady = 5;
         GBC.gridx = 0; GBC.gridy = 4; GBC.weightx = 0; GBC.insets = new Insets(10,20,20,10); pDatos.add(lClave,GBC);
-        GBC.gridx = 1; GBC.gridy = 4; GBC.weightx = 1; GBC.insets = new Insets(10,10,20,20); pDatos.add(pfClave,GBC);
+        GBC.anchor = GridBagConstraints.CENTER; GBC.fill = GridBagConstraints.BOTH;
+        GBC.gridx = 1; GBC.gridy = 4; GBC.weightx = 1; GBC.insets = new Insets(10,10,20,0);pDatos.add(pfClave,GBC);
+        GBC.anchor = GridBagConstraints.EAST; GBC.fill = GridBagConstraints.NONE;
+        GBC.gridx = 2; GBC.gridy = 4; GBC.weightx = 0; GBC.insets = new Insets(10,0,20,20);pDatos.add(bMostrarClave,GBC);
     }
     
     public String getCamposFaltantes(String TextoObtenido, String Mensaje){
@@ -281,90 +292,102 @@ public final class FrameModificarAlcalde extends JFrame implements ActionListene
     }
     
     @Override
-    public void actionPerformed(ActionEvent e) {
-        String sNombre = tfNombre.getText().trim();
-        String sApellido = tfApellido.getText().trim();
-        String sDNI = tfDNI.getText().trim();
-        String sGenero = (rbMasculino.isSelected()) ? "Masculino" : (rbFemenino.isSelected()) ? "Femenino" : (rbOtro.isSelected()) ? "Otro" : "";   
-        String sClave = new String(pfClave.getPassword()).trim();
-        
-        // VERIFICAR DATOS NO INGRESADOS 
-        String sCamposFaltantes = "";
-        sCamposFaltantes += getCamposFaltantes(sNombre,     "* Nombre\n");
-        sCamposFaltantes += getCamposFaltantes(sApellido,   "* Apellido\n");
-        sCamposFaltantes += getCamposFaltantes(sDNI,        "* DNI\n");
-        sCamposFaltantes += getCamposFaltantes(sGenero,     "* Género\n");
-        sCamposFaltantes += getCamposFaltantes(sClave,      "* Clave\n");
+    public void actionPerformed(ActionEvent ae) {
+        if(ae.getSource()==bMostrarClave){
+            if(bMostrarClave.isSelected()){
+                pfClave.setEchoChar((char)0);
+                bMostrarClave.setText("Ocultar");
+            }
+            else{
+                pfClave.setEchoChar(echoCharPorDefecto);
+                bMostrarClave.setText("Mostrar");
+            }
+        }
+        if(ae.getSource()==bActualizar){
+            String sNombre = tfNombre.getText().trim();
+            String sApellido = tfApellido.getText().trim();
+            String sDNI = tfDNI.getText().trim();
+            String sGenero = (rbMasculino.isSelected()) ? "Masculino" : (rbFemenino.isSelected()) ? "Femenino" : (rbOtro.isSelected()) ? "Otro" : "";   
+            String sClave = new String(pfClave.getPassword()).trim();
 
-        if(!sCamposFaltantes.equals("")){
-            JOptionPane.showMessageDialog(this,"CAMPOS FALTANTES:\n"+sCamposFaltantes,"ERROR",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        // VERIFICAR NOMBRE
-        if(sNombre.length() > MAX_LOGITUD_NOMBRE){
-            JOptionPane.showMessageDialog(this,"Nombre no más de "+MAX_LOGITUD_NOMBRE+" caracteres.","ERROR",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if(!espacioCorrecto(sNombre)){
-            JOptionPane.showMessageDialog(this,"Separe correctamente los nombres con 1 solo espacio.","ERROR",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        // VERIFICAR APELLIDO
-        if(sApellido.length() > MAX_LOGITUD_APELLIDO){
-            JOptionPane.showMessageDialog(this,"Apellido no más de "+MAX_LOGITUD_NOMBRE+" caracteres.","ERROR",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        if(!espacioCorrecto(sApellido)){
-            JOptionPane.showMessageDialog(this,"Separe correctamente los apellidos con 1 solo espacio.","ERROR",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        // VERIFICAR DNI
-        int nDNI=0;
-        try{
-            nDNI = Integer.parseInt(sDNI);
-            if(nDNI <= 0 || nDNI > MAX_NUMERO_DNI){
-                JOptionPane.showMessageDialog(this,"DNI negativo, nulo o superior a "+MAX_NUMERO_DNI+".","ERROR",JOptionPane.ERROR_MESSAGE);
+            // VERIFICAR DATOS NO INGRESADOS 
+            String sCamposFaltantes = "";
+            sCamposFaltantes += getCamposFaltantes(sNombre,     "* Nombre\n");
+            sCamposFaltantes += getCamposFaltantes(sApellido,   "* Apellido\n");
+            sCamposFaltantes += getCamposFaltantes(sDNI,        "* DNI\n");
+            sCamposFaltantes += getCamposFaltantes(sGenero,     "* Género\n");
+            sCamposFaltantes += getCamposFaltantes(sClave,      "* Clave\n");
+
+            if(!sCamposFaltantes.equals("")){
+                JOptionPane.showMessageDialog(this,"CAMPOS FALTANTES:\n"+sCamposFaltantes,"ERROR",JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
-            if(existeDNI(nDNI)){
-                JOptionPane.showMessageDialog(this,"El DNI ya se encuentra registrado.","ERROR",JOptionPane.ERROR_MESSAGE);
+
+            // VERIFICAR NOMBRE
+            if(sNombre.length() > MAX_LOGITUD_NOMBRE){
+                JOptionPane.showMessageDialog(this,"Nombre no más de "+MAX_LOGITUD_NOMBRE+" caracteres.","ERROR",JOptionPane.ERROR_MESSAGE);
                 return;
             }
-        } catch(HeadlessException | NumberFormatException EX){
-            JOptionPane.showMessageDialog(this,"DNI invalido.\nEjemplo DNI: 12345678","ERROR",JOptionPane.ERROR_MESSAGE);
-            return;
-        } catch (SQLException ex) {
-            Logger.getLogger(FrameModificarAlcalde.class.getName()).log(Level.SEVERE, null, ex);
-            return;
-        }
 
-        // VERIFICAR CLAVE   
-        if(!claveVerificado(sClave)){
-            JOptionPane.showMessageDialog(this,REQUISITOS_CLAVE,"REQUISITOS",JOptionPane.INFORMATION_MESSAGE);
-            return;
+            if(!espacioCorrecto(sNombre)){
+                JOptionPane.showMessageDialog(this,"Separe correctamente los nombres con 1 solo espacio.","ERROR",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // VERIFICAR APELLIDO
+            if(sApellido.length() > MAX_LOGITUD_APELLIDO){
+                JOptionPane.showMessageDialog(this,"Apellido no más de "+MAX_LOGITUD_NOMBRE+" caracteres.","ERROR",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if(!espacioCorrecto(sApellido)){
+                JOptionPane.showMessageDialog(this,"Separe correctamente los apellidos con 1 solo espacio.","ERROR",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // VERIFICAR DNI
+            int nDNI=0;
+            try{
+                nDNI = Integer.parseInt(sDNI);
+                if(nDNI <= 0 || nDNI > MAX_NUMERO_DNI){
+                    JOptionPane.showMessageDialog(this,"DNI negativo, nulo o superior a "+MAX_NUMERO_DNI+".","ERROR",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if(existeDNI(nDNI)){
+                    JOptionPane.showMessageDialog(this,"El DNI ya se encuentra registrado.","ERROR",JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch(HeadlessException | NumberFormatException EX){
+                JOptionPane.showMessageDialog(this,"DNI invalido.\nEjemplo DNI: 12345678","ERROR",JOptionPane.ERROR_MESSAGE);
+                return;
+            } catch (SQLException ex) {
+                Logger.getLogger(FrameModificarAlcalde.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+
+            // VERIFICAR CLAVE   
+            if(!claveVerificado(sClave)){
+                JOptionPane.showMessageDialog(this,REQUISITOS_CLAVE,"REQUISITOS",JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            // ACTUALIZAR LOS DATOS UNA VEZ VERIFICADOS
+            ConexionPostgres BDD = new ConexionPostgres();
+            String Query = "UPDATE alcaldes SET nombre = ?, apellido = ?, dni = ?, genero = ?, clave = ? WHERE id = ? ;";
+            Object values[] = {sNombre,sApellido,nDNI,sGenero,sClave,this.idAlcalde};
+            try {
+                BDD.comandoDML(Query,values);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this,ex.getMessage(),"ERROR",JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // MENSAJE DE EXITO
+            JOptionPane.showMessageDialog(this,"¡Alcalde Actualizado Correctamente!\nLos cambios se mostrarán en el Menú de Alcaldes.","ÉXITO",JOptionPane.INFORMATION_MESSAGE);
+            MenuPadre.setEnableButtons(true);
+            this.dispose();
         }
-        
-        // ACTUALIZAR LOS DATOS UNA VEZ VERIFICADOS
-        ConexionPostgres BDD = new ConexionPostgres();
-        String Query = "UPDATE alcaldes SET nombre = ?, apellido = ?, dni = ?, genero = ?, clave = ? WHERE id = ? ;";
-        Object values[] = {sNombre,sApellido,nDNI,sGenero,sClave,this.idAlcalde};
-        try {
-            BDD.comandoDML(Query,values);
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(this,ex.getMessage(),"ERROR",JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        // MENSAJE DE EXITO
-        JOptionPane.showMessageDialog(this,"¡Alcalde Actualizado Correctamente!\nLos cambios se mostrarán en el Menú de Alcaldes.","ÉXITO",JOptionPane.INFORMATION_MESSAGE);
-        MenuPadre.setEnableButtons(true);
-        this.dispose();
     }
     
     @Override
