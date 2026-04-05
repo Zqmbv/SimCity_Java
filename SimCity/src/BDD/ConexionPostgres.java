@@ -1,6 +1,5 @@
 package BDD;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -14,9 +13,9 @@ public class ConexionPostgres {
     
     // Configuración de la base de datos
     // El puerto por defecto de PostgreSQL es 5432
-    private static final String URL = "jdbc:postgresql://localhost:5433/SimCityBD";
+    private static final String URL = "jdbc:postgresql://localhost:5432/SimCityBD";
     private static final String USUARIO = "postgres";
-    private static final String PASSWORD = "root1234";
+    private static final String PASSWORD = "1234";
 
     public Connection conectar() {
         this.conexion = null;
@@ -65,7 +64,7 @@ public class ConexionPostgres {
     
             int filasAfectadas = PS.executeUpdate();
             if (filasAfectadas > 0) {
-                System.out.println("¡BIEN CHÉVERE!");
+                System.out.println("Comando DML Ejecutado Correctamente.");
             }
             
         } catch(SQLException SQLE) {

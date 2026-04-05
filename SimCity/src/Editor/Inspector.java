@@ -1,103 +1,168 @@
 package Editor;
+import BDD.ConexionPostgres;
+import Editor.Prefabs.*;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import static java.util.Map.entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.media.j3d.*;
+import javax.vecmath.*;
 
 public class Inspector extends JPanel implements ActionListener {
     
     //MAP
-    static int MAP_WIDTH = 32;
-    static int MAP_HEIGHT = 32; 
+    public static int ID_CIUDAD = -1;
+    public static int MAP_WIDTH = 32;
+    public static int MAP_HEIGHT = 32; 
     
+    static class DATA{
+        String tag,ref;
+        int size;
+        Color color;
+       
+        public DATA(String t, int s, Color c,String r){
+        tag=t;size=s;color=c;ref=r;}
+    }
+    
+    Map<String,DATA> Memory = Map.ofEntries(
+        entry("Zona Residencial",new DATA("R",3,Color.red, "Zona Residencial")),
+        entry("Zona Comercial",new DATA("C",3,Color.blue, "Zona Comercial")),
+        entry("Zona Industrial",new DATA("I",3,Color.yellow, "Zona Industrial")),
+
+        entry("Planta de Carbón",new DATA("PC",4,Color.white, "Planta de Carbón")),
+        entry("Planta Nuclear",new DATA("PN",4,Color.white, "Planta Nuclear")),
+
+        entry("Estación de Policía",new DATA("EP",3,Color.cyan,"Estación de Policía")),
+        entry("Estación de Bomberos",new DATA("EB",3,Color.orange,"Estación de Bomberos")),
+
+        entry("Puerto Marítimo",new DATA("PM",4,Color.magenta,"Puerto Marítimo")),
+        entry("Aeropuerto",new DATA("A",6,Color.magenta,"Aeropuerto")),
+        entry("Estadio",new DATA("E",4,Color.magenta,"Estadio")),
+        
+        entry("Carretera",new DATA("C",1,Color.black,"Carretera")),
+        entry("Vía de Tren",new DATA("T",1,Color.gray,"Vía de Tren")),            
+        entry("Líneas Eléctricas",new DATA("L",1,Color.white,"Líneas Eléctricas")),
+        entry("Parque",new DATA("P",1,Color.green,"Parque")),   
+        
+        entry("Demoler",new DATA("x",1,Color.red,null)),
+        entry("Rotar",new DATA("+",1,Color.green,null))                
+    );
+
     //DATA UNITARIO(1,1,1)
     static class Tile{
-        String tag;
-        int x,y, size = 0;
-        Color color;
-        
+        int x,y;
+        DATA struct;
         Tile(){};
-        Tile(String t, int s,Color c){
-            this.tag = t; this.size = s; this.color = c;};
-        Tile(Tile T){this.x = T.x; this.y = T.y;
-            this.tag = T.tag; this.size = T.size; this.color = T.color;};
+        Tile(Tile T){x = T.x; y = T.y; struct = T.struct;}
     }
     
     static Tile Cursor = new Tile();
-    static ArrayList<Tile> Tiles = new ArrayList<>();
+    static ArrayList<Tile> Tiles2D = new ArrayList<>();
+    static ArrayList<BranchGroup> Tiles3D = new ArrayList<>();
+    
     
     View2D newView2D = new View2D();
     View3D newView3D = new View3D();
+   
+    
+    Map<String,String[]> TxtMenu = Map.ofEntries(
+        entry("RCI",new String[]{"Zona Residencial","Zona Comercial","Zona Industrial"}),      
+        entry("Energia",new String[]{"Planta de Carbón","Planta Nuclear"}), 
+        entry("Servicios",new String[]{"Estación de Policía","Estación de Bomberos"}), 
+        entry("Turismo",new String[]{"Estadio","Puerto Marítimo","Aeropuerto"}), 
+        entry("Otros",new String[]{"Carretera","Vía de Tren","Parque","Líneas Eléctricas"}) 
+    );    
     
     JLabel TxtInfo = new JLabel("Se Eligio: Zona Residencial");
     JButton BtnConstruir = new JButton("Construir");
     JButton BtnDesruir = new JButton("Demoler");
-    JButton BtnMejorar = new JButton("Mejorar");    
+    JButton BtnRotar = new JButton("Rotar");   
     
-    Map<String,Tile> Datos = Map.ofEntries(
-        entry("Zona Residencial",new Tile("R",3,Color.red)),
-        entry("Zona Comercial",new Tile("C",3,Color.blue)),
-        entry("Zona Industrial",new Tile("I",3,Color.yellow)),
-
-        entry("Planta de Carbón",new Tile("PC",4,Color.white)),
-        entry("Planta Nuclear",new Tile("PN",4,Color.white)),
-
-        entry("Estación de Policía",new Tile("EP",3,Color.cyan)),
-        entry("Estación de Bomberos",new Tile("EB",3,Color.orange)),
-
-        entry("Carretera",new Tile("C",1,Color.black)),
-        entry("Vía de Tren",new Tile("T",1,Color.gray)),            
-        entry("Líneas Eléctricas",new Tile("L",1,Color.white)),
-        entry("Parque",new Tile("P",1,Color.green)),               
-
-        entry("Puerto Marítimo",new Tile("PM",4,Color.magenta)),
-        entry("Aeropuerto",new Tile("A",6,Color.magenta)),
-        entry("Estadio",new Tile("E",4,Color.magenta))
-    );
+    ConexionPostgres BD = new ConexionPostgres();
     
-    String Category[] = {"RCI","Energia","Servicios","Turismo","Otros"};
-    String Options[][] = {{"Zona Residencial","Zona Comercial","Zona Industrial"},
-                          {"Planta de Carbón","Planta Nuclear"},
-                          {"Estación de Policía","Estación de Bomberos"},
-                          {"Estadio","Aeropuerto","Puerto Marítimo"},
-                          {"Carretera","Vía de Tren","Parque","Líneas Eléctricas"}};
-    
-    public Inspector(){
+    public Inspector() throws SQLException{        
+        String QUERY = "SELECT tipo,posx,posy,rotacion FROM tiles WHERE idCiudad = ?";
+
+        ResultSet RS = BD.consultar(QUERY,new Object[]{ID_CIUDAD});
+        
+        ArrayList<ArrayList<Object>> Rows = new ArrayList<>();
+        while(RS != null && RS.next()){
+            ArrayList<Object> newRow = new ArrayList<>();
+            newRow.add(RS.getString("Tipo"));
+            newRow.add(Integer.valueOf(RS.getString("posx")));            
+            newRow.add(Integer.valueOf(RS.getString("posy")));             
+            newRow.add(Double.valueOf(RS.getString("rotacion"))); 
+            Rows.add(newRow);
+        }       
+        
+        for(ArrayList<Object> R: Rows){
+            Change(Memory.get(R.get(0)));
+            Cursor.x = (int) R.get(1);
+            Cursor.y = (int) R.get(2);
+            
+            //OJO - VALORES NO ESCALADOS
+            Tile  newTile  = new Tile(Cursor);                              
+            Tiles2D.add(newTile);
+            newView2D.repaint();
+
+            TransformGroup newStruct = null;
+            switch(Cursor.struct.ref){
+                case "Zona Residencial": newStruct = new Residencial(); break;
+                case "Zona Comercial": newStruct = new Comercial(); break;
+                case "Zona Industrial": newStruct = new Industrial(); break;
+                case "Planta de Carbón": newStruct = new CoalPowerPlant(); break;
+                case "Planta Nuclear": newStruct = new NuclearPowerPlant(); break;
+                case "Estación de Policía": newStruct = new PoliceStation(); break;
+                case "Estación de Bomberos": newStruct = new FireStation(); break;
+                case "Puerto Marítimo": newStruct = new Seaport(); break;
+                case "Aeropuerto": newStruct = new Airport(); break;
+                case "Estadio": newStruct = new Stadium(); break;
+                case "Carretera": newStruct = new Road(); break;
+                case "Vía de Tren": newStruct = new Rail(); break;
+                case "Líneas Eléctricas": newStruct = new Wire(); break;
+                case "Parque": newStruct = new Park(); break;
+            }
+
+            Tiles3D.add(newView3D.AddModel(newStruct,Cursor.x+((float)Cursor.struct.size)/2, Cursor.y+((float)Cursor.struct.size)/2,(float) (double) R.get(3)));
+        }
+        
         this.setLayout(new BorderLayout());
         
         JPanel newPanel = new JPanel(new BorderLayout());
-            newPanel.add(TopBar(),BorderLayout.NORTH);        
-            newPanel.add(newView2D,BorderLayout.CENTER);      
+            newPanel.add(TopBar(),BorderLayout.NORTH);   
+            newPanel.add(newView2D,BorderLayout.CENTER);
             newPanel.add(BottomBar(),BorderLayout.SOUTH);
         this.add(newPanel,BorderLayout.WEST);
-        
         this.add(newView3D,BorderLayout.CENTER);
-        Change(Datos.get("Zona Residencial"));
+        
+        Cursor.x=0;Cursor.y=0;
+        Change(Memory.get("Zona Residencial"));
     }
     
     JMenuBar TopBar(){
         JMenuBar myMenu = new JMenuBar();
-                
-        for(int i = 0; i < Category.length; i++) {
-            JMenu newMenu = new JMenu(Category[i]);
-            for(String O : Options[i]){
-                JMenuItem newOption = new JMenuItem(O);
+               
+        for (String key : new String[]{"RCI","Energia","Servicios","Turismo","Otros"}) {
+            JMenu newMenu = new JMenu(key);
+            for (String Value : TxtMenu.get(key)) {
+                JMenuItem newOption = new JMenuItem(Value);
                 newOption.addActionListener(this);
                 newMenu.add(newOption);
-            }
+            }myMenu.add(newMenu);
+        }       
             
-            myMenu.add(newMenu);
-        }
-        
         JMenuItem Demolish = new JMenuItem("Demoler");        
         Demolish.addActionListener(this);
         myMenu.add(Demolish); 
         
-        JMenuItem Update = new JMenuItem("Mejorar");        
+        JMenuItem Update = new JMenuItem("Rotar");        
         Update.addActionListener(this);
         myMenu.add(Update); 
-        
         
         return myMenu;
     }
@@ -107,108 +172,170 @@ public class Inspector extends JPanel implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = gbc.BOTH;
         gbc.weightx = 1; gbc.weighty =1;
-       
         gbc.insets = new Insets(5,5,5,5);
         
-        
         panel.add(TxtInfo,gbc);
+        
         gbc.gridy=1;
         panel.add(BtnConstruir,gbc);        
         BtnConstruir.addActionListener(this);
-        
-        gbc.gridy=2;
         panel.add(BtnDesruir,gbc);        
         BtnDesruir.addActionListener(this);
         BtnDesruir.setVisible(false);
-
-        gbc.gridy=3;
-        panel.add(BtnMejorar,gbc);        
-        BtnMejorar.addActionListener(this);
-        BtnMejorar.setVisible(false);
+        panel.add(BtnRotar,gbc);        
+        BtnRotar.addActionListener(this);
+        BtnRotar.setVisible(false);
         
         return panel;
     }
    
-    public void Build(){
-        Rectangle newTileCollider = new Rectangle(Cursor.x,Cursor.y,Cursor.size, Cursor.size);
-        Rectangle Border = new Rectangle(0, 0, Inspector.MAP_WIDTH-Inspector.Cursor.size+1, Inspector.MAP_HEIGHT-Inspector.Cursor.size+1);
+    public void Build() throws SQLException{
+        Rectangle newTileCollider = new Rectangle(Cursor.x,Cursor.y,Cursor.struct.size, Cursor.struct.size);
+        Rectangle Border = new Rectangle(0, 0, MAP_WIDTH-Cursor.struct.size+1, MAP_HEIGHT-Cursor.struct.size+1);
         
         if(!Border.intersects(newTileCollider)){
                 JOptionPane.showMessageDialog(this, "ERROR\nSE SALIO DE LA ZONA DE CONTRUCCIÓN");
                 newView2D.repaint();return;
         }
         
-        
-        for(Tile T : Tiles){            
-            Rectangle oldTileCollider = new Rectangle(T.x,T.y, T.size, T.size);
+        for(Tile T : Tiles2D){            
+            Rectangle oldTileCollider = new Rectangle(T.x,T.y, T.struct.size, T.struct.size);
             if(newTileCollider.intersects(oldTileCollider)){
                 JOptionPane.showMessageDialog(this, "ERROR\nLA ESTRUCTURA COLISIONÓ CON OTRA");
                 newView2D.repaint();return;
             }
         }         
         
+        String ins = "INSERT INTO tiles (idCiudad,tipo,posx,posy,rotacion) VALUES (?,?,?,?,?)";
+        Object[] values = {ID_CIUDAD,Cursor.struct.ref,Cursor.x,Cursor.y,0};
+        BD.comandoDML(ins,values);
+        
         //OJO - VALORES NO ESCALADOS
         Tile  newTile  = new Tile(Cursor);                              
-        Tiles.add(newTile);
+        Tiles2D.add(newTile);
         newView2D.repaint();
+        
+        TransformGroup newStruct = null;
+        switch(Cursor.struct.ref){
+            case "Zona Residencial": newStruct = new Residencial(); break;
+            case "Zona Comercial": newStruct = new Comercial(); break;
+            case "Zona Industrial": newStruct = new Industrial(); break;
+            case "Planta de Carbón": newStruct = new CoalPowerPlant(); break;
+            case "Planta Nuclear": newStruct = new NuclearPowerPlant(); break;
+            case "Estación de Policía": newStruct = new PoliceStation(); break;
+            case "Estación de Bomberos": newStruct = new FireStation(); break;
+            case "Puerto Marítimo": newStruct = new Seaport(); break;
+            case "Aeropuerto": newStruct = new Airport(); break;
+            case "Estadio": newStruct = new Stadium(); break;
+            case "Carretera": newStruct = new Road(); break;
+            case "Vía de Tren": newStruct = new Rail(); break;
+            case "Líneas Eléctricas": newStruct = new Wire(); break;
+            case "Parque": newStruct = new Park(); break;
+        }
+        
+        Tiles3D.add(newView3D.AddModel(newStruct,Cursor.x+((float)Cursor.struct.size)/2, Cursor.y+((float)Cursor.struct.size)/2,0));
+        newView3D.CamUpdate(new Vector3f(2*Cursor.x+((float)Cursor.struct.size),20,2*Cursor.y+(float)Cursor.struct.size), new Vector2f((float)Math.toRadians(-90),0));
     }
     
-    public void Demolish(){
-        Rectangle DestroyCollider = new Rectangle(Cursor.x,Cursor.y,Cursor.size, Cursor.size);
-        for(int i = 0 ; i < Tiles.size(); i++){
-            Rectangle BuildCollider = new Rectangle(Tiles.get(i).x,Tiles.get(i).y, Tiles.get(i).size, Tiles.get(i).size);
+    public void Demolish() throws SQLException{
+        Rectangle DestroyCollider = new Rectangle(Cursor.x,Cursor.y,Cursor.struct.size, Cursor.struct.size);
+        for(int i = 0 ; i < Tiles2D.size(); i++){
+            Rectangle BuildCollider = new Rectangle(Tiles2D.get(i).x,Tiles2D.get(i).y, Tiles2D.get(i).struct.size, Tiles2D.get(i).struct.size);
             if(DestroyCollider.intersects(BuildCollider)){
-                Tiles.remove(Tiles.get(i));
+                
+                
+                String ins = "DELETE FROM tiles WHERE idCiudad = ? AND posx = ? AND posy = ?";
+           
+                Object[] values = {ID_CIUDAD,Tiles2D.get(i).x,Tiles2D.get(i).y};
+                BD.comandoDML(ins,values);
+                
+                Tiles2D.remove(Tiles2D.get(i));
+                newView3D.RemoveModel(Tiles3D.get(i));
+                Tiles3D.remove(Tiles3D.get(i));
+                newView2D.repaint();
+                newView3D.CamUpdate(new Vector3f(2*Cursor.x+((float)Cursor.struct.size),20,2*Cursor.y+(float)Cursor.struct.size), new Vector2f((float)Math.toRadians(-90),0));
+                return;
             }
         }         
-
-        newView2D.repaint();      
+        JOptionPane.showMessageDialog(this, "ERROR\nNO HAY NADA QUE DEMOLER");
+        newView2D.repaint();
     }
 
-    public void Update(){ //Coming Soon
-        newView2D.repaint();      
+    public void Rotate() throws SQLException{
+        Rectangle DestroyCollider = new Rectangle(Cursor.x,Cursor.y,Cursor.struct.size, Cursor.struct.size);
+        for(int i = 0 ; i < Tiles2D.size(); i++){
+            Rectangle BuildCollider = new Rectangle(Tiles2D.get(i).x,Tiles2D.get(i).y, Tiles2D.get(i).struct.size, Tiles2D.get(i).struct.size);
+            if(DestroyCollider.intersects(BuildCollider)){
+               
+                int ROT = 0;
+                
+                String QUERY = "SELECT rotacion FROM tiles WHERE idCiudad = ? AND posx = ? AND posy = ? LIMIT 1";
+                ResultSet RS = BD.consultar(QUERY,new Object[]{ID_CIUDAD,Tiles2D.get(i).x,Tiles2D.get(i).y});
+                while(RS != null && RS.next()){           
+                    ROT = Integer.valueOf(RS.getString("rotacion"));
+                }  
+                
+                ROT+=90;
+                if((int)ROT==360){ROT=0;}
+                
+                String ins = "UPDATE tiles SET rotacion = ? WHERE idCiudad = ? AND posx = ? AND posy = ?";
+                Object[] values = {ROT,ID_CIUDAD,Tiles2D.get(i).x,Tiles2D.get(i).y};
+                BD.comandoDML(ins,values);
+                
+                
+                newView3D.CamUpdate(new Vector3f(2*Cursor.x+((float)Cursor.struct.size),20,2*Cursor.y+(float)Cursor.struct.size), new Vector2f((float)Math.toRadians(-90),0));
+                newView3D.rotarHijoInterno(Tiles3D.get(i),90);
+                newView2D.repaint();  
+                return;
+            }
+        }         
+        
+        JOptionPane.showMessageDialog(this, "ERROR\nNO HAY NADA QUE ROTAR");
+        newView2D.repaint();     
     }
     
-     public void Change(Tile Dat){
-        Cursor.tag = Dat.tag;
-        Cursor.size = Dat.size;
-        Cursor.color = Dat.color;
-        repaint(); 
+     public void Change(DATA D){
+        Cursor.struct = D;
+        newView2D.repaint(); 
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == BtnConstruir){Build();return;}
-        if(e.getSource() == BtnDesruir){Demolish();return;}
+        try {
+            if(e.getSource() == BtnConstruir){Build();return;}
+            if(e.getSource() == BtnDesruir){Demolish();return;}
+            if(e.getSource() == BtnRotar){Rotate();return;}
+        } catch (SQLException ex) {
+                Logger.getLogger(Inspector.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         
         String CMD = ((JMenuItem)e.getSource()).getText(); 
         
         if(CMD == "Demoler"){
             BtnConstruir.setVisible(false);
             BtnDesruir.setVisible(true);
-            BtnMejorar.setVisible(false);
+            BtnRotar.setVisible(false);
             
             TxtInfo.setText("Que desea demoler?");
-            Change(new Tile(" - ",1,Color.red));   
-            newView2D.repaint();
+            Change(Memory.get(CMD)); 
             return;
         }
             
-        if(CMD == "Mejorar"){
+        if(CMD == "Rotar"){
             BtnConstruir.setVisible(false);
             BtnDesruir.setVisible(false);
-            BtnMejorar.setVisible(true);
+            BtnRotar.setVisible(true);
             
-            TxtInfo.setText("Que desea mejorar?");
-            Change(new Tile(" + ",1,Color.green));   
-            newView2D.repaint();
+            TxtInfo.setText("Que desea rotar?");
+            Change(Memory.get(CMD));  
             return;
         }            
             
         BtnConstruir.setVisible(true);
         BtnDesruir.setVisible(false);
-        BtnMejorar.setVisible(false); 
+        BtnRotar.setVisible(false); 
         TxtInfo.setText("Se Eligio: " + CMD);        
-        Change(Datos.get(CMD));
+        Change(Memory.get(CMD));
     }
 }

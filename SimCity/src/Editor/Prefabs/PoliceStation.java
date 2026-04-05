@@ -8,7 +8,7 @@ public class PoliceStation extends TransformGroup  {
 
     public PoliceStation(){
         Transform3D Pivot = new  Transform3D();
-        Pivot.setTranslation(new Vector3f(3f,0,3f));
+        //Pivot.setTranslation(new Vector3f(3f,0,3f));
         this.setTransform(Pivot);
         
         Appearance app = new Appearance();

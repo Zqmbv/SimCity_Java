@@ -41,7 +41,7 @@ public final class MenuRegistrarAlcalde extends JFrame implements ActionListener
             + "* Al menos 1 Caracter especial.\n"
             + "* Sin espacios entre carácteres.";
 
-    private Menu MenuPadre;
+    private MenuAlcaldes MenuPadre;
     
     JPanel pTitulo = new JPanel();
     JLabel lMenuTitulo = new JLabel("REGISTRAR NUEVO ALCALDE");
@@ -69,7 +69,7 @@ public final class MenuRegistrarAlcalde extends JFrame implements ActionListener
     GridBagLayout GBL = new GridBagLayout();
     GridBagConstraints GBC = new GridBagConstraints();
     
-    public MenuRegistrarAlcalde(Menu MenuPadre) throws SQLException{
+    public MenuRegistrarAlcalde(MenuAlcaldes MenuPadre) throws SQLException{
         this.MenuPadre = MenuPadre;
         setTitle("SimCity Java - Registrar Alcalde");
         
@@ -147,6 +147,7 @@ public final class MenuRegistrarAlcalde extends JFrame implements ActionListener
         
         pTitulo.setLayout(GBL);
         GBC.anchor = GridBagConstraints.CENTER;
+        GBC.insets = new Insets(10, 10, 10, 10);
         GBC.gridx = 0; GBC.gridy = 0; pTitulo.add(lMenuTitulo,GBC); 
         
         pBoton.setLayout(GBL);

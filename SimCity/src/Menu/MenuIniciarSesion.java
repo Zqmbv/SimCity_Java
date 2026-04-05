@@ -35,7 +35,7 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
             + "* Al menos 1 Caracter especial.\n"
             + "* Sin espacios entre carácteres.";
     
-    private Menu MenuPadre;
+    private MenuAlcaldes MenuPadre;
     
     int dniAlcalde;
 
@@ -54,7 +54,7 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
     GridBagLayout GBL = new GridBagLayout();
     GridBagConstraints GBC = new GridBagConstraints();
   
-    public MenuIniciarSesion(Menu MenuPadre, int dniAlcalde){
+    public MenuIniciarSesion(MenuAlcaldes MenuPadre, int dniAlcalde){
         this.MenuPadre = MenuPadre;
         this.dniAlcalde = dniAlcalde;
         
@@ -103,6 +103,7 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
         add(pBoton,BorderLayout.SOUTH);
         
         pTitulo.setLayout(GBL);
+        GBC.insets = new Insets(10, 10, 10, 10);
         GBC.anchor = GridBagConstraints.CENTER;
         GBC.gridx = 0; GBC.gridy = 0; pTitulo.add(lMenuTitulo,GBC); 
         
@@ -187,7 +188,7 @@ public class MenuIniciarSesion extends JFrame implements ActionListener,WindowLi
             }
             
             // MENSAJE DE EXITO!
-            JOptionPane.showMessageDialog(this,"¡Bienvenido a SimCity Java, "+TUPLA.get(1)+"!","ÉCITO",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this,"¡Bienvenido a SimCity Java, "+TUPLA.get(1)+"!","ÉXITO",JOptionPane.INFORMATION_MESSAGE);
             MenuPadre.setEnableButtons(true);
             this.dispose();
             

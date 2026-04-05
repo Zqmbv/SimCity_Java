@@ -7,7 +7,7 @@ import javax.vecmath.*;
 public class Airport extends TransformGroup {
     public Airport(){
         Transform3D Pivot = new  Transform3D();
-        Pivot.setTranslation(new Vector3f(6f,0,6f));
+        //Pivot.setTranslation(new Vector3f(6f,0,6f));
         this.setTransform(Pivot);
 
         Appearance app = new Appearance();

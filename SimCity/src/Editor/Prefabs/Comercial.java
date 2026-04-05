@@ -6,8 +6,8 @@ import javax.vecmath.*;
 
 public class Comercial extends TransformGroup  {
     public Comercial(){
-          Transform3D Pivot = new  Transform3D();
-        Pivot.setTranslation(new Vector3f(3f,0,3f));
+        Transform3D Pivot = new  Transform3D();
+        //Pivot.setTranslation(new Vector3f(3f,0,3f));
         this.setTransform(Pivot);
         
         Appearance app = new Appearance();

@@ -6,8 +6,8 @@ import javax.vecmath.*;
 
 public class Seaport  extends TransformGroup{
     public Seaport(){
-            Transform3D Pivot = new  Transform3D();
-        Pivot.setTranslation(new Vector3f(4f,0,4f));
+        Transform3D Pivot = new  Transform3D();
+       // Pivot.setTranslation(new Vector3f(4f,0,4f));
         this.setTransform(Pivot);
         
         Appearance app = new Appearance();
