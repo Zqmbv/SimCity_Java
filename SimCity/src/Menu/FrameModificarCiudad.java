@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -189,7 +190,6 @@ public final class FrameModificarCiudad extends JFrame implements ActionListener
         // VERIFICAR DATOS NO INGRESADOS 
         String sCamposFaltantes = "";
         sCamposFaltantes += getCamposFaltantes(sNombreCiudad,       "* Nombre Ciudad\n");
-        sCamposFaltantes += getCamposFaltantes(sDescripcion,        "* Descripción\n");
  
         if(!sCamposFaltantes.equals("")){
             JOptionPane.showMessageDialog(this,"CAMPOS FALTANTES:\n"+sCamposFaltantes,"ERROR",JOptionPane.ERROR_MESSAGE);
@@ -222,6 +222,19 @@ public final class FrameModificarCiudad extends JFrame implements ActionListener
             return;
         }
 
+        if(sDescripcion.equals("")){
+            String sDescripcionesGenericas[] = {
+                "Una próspera ciudad en crecimiento.",
+                "Tierra de oportunidades lista para ser urbanizada.",
+                "Un lienzo en blanco para el mejor alcalde.",
+                "Fundada con grandes sueños y poco presupuesto.",
+                "Aquí inicia la leyenda de la gran metrópolis."
+            }; 
+            Random rand = new Random();
+            int iAleatorio = rand.nextInt(sDescripcionesGenericas.length);
+            sDescripcion = sDescripcionesGenericas[iAleatorio];
+        }
+        
         // ACTUALIZAR LOS DATOS UNA VEZ VERIFICADOS
         ConexionPostgres BDD = new ConexionPostgres();
         String Query = "UPDATE ciudades SET nombre = ?, descripcion = ? WHERE id = ?;";

@@ -164,6 +164,7 @@ public class MenuAlcaldes extends JPanel implements ActionListener{
     public void setConfigComponente(){
         bAgregar.addActionListener(this);
         bVolver.addActionListener(this);
+        spAlcaldes.getVerticalScrollBar().setUnitIncrement(12); 
     }
     
     public void setPosition() throws SQLException{

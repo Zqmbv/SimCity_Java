@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -173,17 +174,15 @@ public final class FrameRegistrarCiudad extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         String sNombreCiudad = tfNombreCiudad.getText().trim();
-        String sTamaño = cbDimension.getSelectedItem().toString().trim();
-        String[] partes = sTamaño.split("\\*");
+        String sDimension = cbDimension.getSelectedItem().toString().trim();
+        String[] partes = sDimension.split("\\*");
         int x = Integer.parseInt(partes[0]);
         int y = Integer.parseInt(partes[1]);
         String sDescripcion = tfDescripcion.getText().trim();
 
         // VERIFICAR DATOS NO INGRESADOS 
         String sCamposFaltantes = "";
-        sCamposFaltantes += getCamposFaltantes(sNombreCiudad,       "* Nombre Ciudad\n");
-        sCamposFaltantes += getCamposFaltantes(sTamaño,             "* Dimensión \n");
-        sCamposFaltantes += getCamposFaltantes(sDescripcion,        "* Descripción\n");
+        sCamposFaltantes += getCamposFaltantes(sNombreCiudad, "* Nombre Ciudad\n");
  
         if(!sCamposFaltantes.equals("")){
             JOptionPane.showMessageDialog(this,"CAMPOS FALTANTES:\n"+sCamposFaltantes,"ERROR",JOptionPane.ERROR_MESSAGE);
@@ -216,6 +215,19 @@ public final class FrameRegistrarCiudad extends JFrame implements ActionListener
             return;
         }
 
+        if(sDescripcion.equals("")){
+            String sDescripcionesGenericas[] = {
+                "Una próspera ciudad en crecimiento.",
+                "Tierra de oportunidades lista para ser urbanizada.",
+                "Un lienzo en blanco para el mejor alcalde.",
+                "Fundada con grandes sueños y poco presupuesto.",
+                "Aquí inicia la leyenda de la gran metrópolis."
+            }; 
+            Random rand = new Random();
+            int iAleatorio = rand.nextInt(sDescripcionesGenericas.length);
+            sDescripcion = sDescripcionesGenericas[iAleatorio];
+        }
+        
         // INSERTAR LOS DATOS UNA VEZ VERIFICADOS
         ConexionPostgres BDD = new ConexionPostgres();
         String Query = "INSERT INTO ciudades (nombre,x,y,descripcion,idAlcalde) VALUES (?,?,?,?,?)";
