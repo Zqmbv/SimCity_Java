@@ -26,6 +26,7 @@ public class View3D extends JPanel implements KeyListener, MouseMotionListener {
     
     public View3D(){
         this.setLayout(new BorderLayout());
+                
         this.add(canvas,BorderLayout.CENTER);
         canvas.addKeyListener(this);
         canvas.addMouseMotionListener(this);

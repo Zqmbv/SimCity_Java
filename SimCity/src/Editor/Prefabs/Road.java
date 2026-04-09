@@ -15,6 +15,14 @@ public class Road extends TransformGroup  {
         mat.setDiffuseColor(new Color3f(Color.black));
         app.setMaterial(mat);
        
+        
+        Appearance appA = new Appearance();
+        Material matA = new Material();
+        matA.setDiffuseColor(new Color3f(Color.white));
+        appA.setMaterial(matA);        
+        
+        Box Blanco = new Box(0.1f,0.15f,0.25f,appA);
+        this.addChild(Blanco);
         Box Road = new Box(1,0.1f,1,app);
         this.addChild(Road);
     }
