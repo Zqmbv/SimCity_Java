@@ -272,7 +272,7 @@ public class MenuCiudades extends JPanel implements ActionListener{
                 
                 
                 
-                JOptionPane.showMessageDialog(this,"Este proyecto cuenta con auto-guardado","Cargando Ciudad...",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Este proyecto cuenta con auto-guardado.","Cargando Ciudad...",JOptionPane.INFORMATION_MESSAGE);
                 
                 JFrame framePrincipal = (JFrame) SwingUtilities.getWindowAncestor(this);
                 if (framePrincipal != null) {
