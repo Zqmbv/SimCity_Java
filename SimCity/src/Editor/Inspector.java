@@ -1,6 +1,7 @@
 package Editor;
 import BDD.ConexionPostgres;
 import Editor.Prefabs.*;
+import Menu.MenuCiudades;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.*;
@@ -71,7 +72,7 @@ public class Inspector extends JPanel implements ActionListener {
         entry("Otros",new String[]{"Carretera","Vía de Tren","Parque","Líneas Eléctricas"}) 
     );    
     
-    JLabel TxtInfo = new JLabel("Se Eligio: Zona Residencial");
+    JLabel TxtInfo = new JLabel("Se Eligió: Zona Residencial");
     JButton BtnConstruir = new JButton("Construir");
     JButton BtnDesruir = new JButton("Demoler");
     JButton BtnRotar = new JButton("Rotar");   
@@ -115,7 +116,11 @@ public class Inspector extends JPanel implements ActionListener {
     
     JMenuBar TopBar(){
         JMenuBar myMenu = new JMenuBar();
-               
+
+        JMenuItem miVolver = new JMenuItem("<- Volver");        
+        miVolver.addActionListener(this);
+        myMenu.add(miVolver); 
+        
         for (String key : new String[]{"RCI","Energia","Servicios","Turismo","Otros"}) {
             JMenu newMenu = new JMenu(key);
             for (String Value : TxtMenu.get(key)) {
@@ -163,13 +168,13 @@ public class Inspector extends JPanel implements ActionListener {
         Rectangle Border = new Rectangle(0, 0, MAP_WIDTH-Cursor.struct.size+1, MAP_HEIGHT-Cursor.struct.size+1);
         
         if(!Border.intersects(newTileCollider)){
-                JOptionPane.showMessageDialog(this, "ERROR\nSE SALIO DE LA ZONA DE CONTRUCCIÓN");
+                JOptionPane.showMessageDialog(this, "ERROR\nSE SALIÓ DE LA ZONA DE CONTRUCCIÓN.","ERROR",JOptionPane.ERROR_MESSAGE);
                 newView2D.repaint();return;
         }
         
         int Check = hasCollission();
         if(Check !=  -1){
-            JOptionPane.showMessageDialog(this, "ERROR\nLA ESTRUCTURA COLISIONÓ CON OTRA");
+            JOptionPane.showMessageDialog(this, "ERROR\nLA ESTRUCTURA COLISIONÓ CON OTRA.","ERROR",JOptionPane.ERROR_MESSAGE);
             newView2D.repaint();return;}
         
         String ins = "INSERT INTO tiles (idCiudad,tipo,posx,posy,rotacion) VALUES (?,?,?,?,?)";
@@ -188,7 +193,7 @@ public class Inspector extends JPanel implements ActionListener {
     public void Demolish() throws SQLException{
         int Check = hasCollission();
         if(Check ==  -1){
-            JOptionPane.showMessageDialog(this, "ERROR\nNO HAY NADA QUE DEMOLER");
+            JOptionPane.showMessageDialog(this, "ERROR\nNO HAY NADA QUE DEMOLER.","ERROR",JOptionPane.ERROR_MESSAGE);
             newView2D.repaint();return;}        
         
         String ins = "DELETE FROM tiles WHERE idCiudad = ? AND posx = ? AND posy = ?";
@@ -211,7 +216,7 @@ public class Inspector extends JPanel implements ActionListener {
     public void Rotate() throws SQLException{
         int Check = hasCollission();
         if(Check == -1){
-            JOptionPane.showMessageDialog(this, "ERROR\nNO HAY NADA QUE ROTAR");
+            JOptionPane.showMessageDialog(this, "ERROR\nNO HAY NADA QUE ROTAR.","ERROR",JOptionPane.ERROR_MESSAGE);
             newView2D.repaint(); return;    
         }
         
@@ -284,13 +289,27 @@ public class Inspector extends JPanel implements ActionListener {
 
         if("Demoler".equals(CMD)){
             BtnDesruir.setVisible(true);
-            TxtInfo.setText("Que desea demoler?"); 
+            TxtInfo.setText("¿Qué desea demoler?"); 
         }else if("Rotar".equals(CMD)){
             BtnRotar.setVisible(true);
-            TxtInfo.setText("Que desea rotar?"); 
+            TxtInfo.setText("¿Qué desea rotar?"); 
+        }else if("<- Volver".equals(CMD)){
+            JFrame framePrincipal = (JFrame) SwingUtilities.getWindowAncestor(this);
+            if (framePrincipal != null) {
+                framePrincipal.remove(this);
+                try {
+                    framePrincipal.add(new MenuCiudades(MenuCiudades.idAlcalde));
+                    Tiles2D.clear();
+                    Tiles3D.clear();
+                } catch (SQLException ex) {
+                    Logger.getLogger(Inspector.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                framePrincipal.revalidate();
+                framePrincipal.repaint();
+            }  
         }else{
             BtnConstruir.setVisible(true);
-            TxtInfo.setText("Se Eligio: " + CMD);   
+            TxtInfo.setText("Se Eligió: " + CMD);   
         }            
         Change(CMD);
     }
